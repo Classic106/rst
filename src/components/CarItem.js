@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 
-const CarItem = ({car}) => {
+const CarItem = ({ car }) => {
     
     const history = useHistory();
     const dispatch = useDispatch();

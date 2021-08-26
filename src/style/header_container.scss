@@ -1,0 +1,23 @@
+.header_container{
+    
+    display:flex;
+    justify-content: space-around;
+    align-items: center;
+    
+    img{
+        width: 100px;
+    }
+    p{
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+    }
+    div{
+        display: flex;
+        padding: 15px;
+    }
+    .header_buttons{
+        display: flex;
+        flex-direction: column;
+    }
+}

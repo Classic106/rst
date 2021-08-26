@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 
 import { ValidMail, ValidPassword, ValidString } from '../helpers';
 
+import '../style/enter_form.scss';
+
 const axios = require('axios').default;
 
 const EnterForm = () => {

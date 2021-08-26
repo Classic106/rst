@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import EnterForm from './EnterForm';
 import RegistrationForm from './RegistrationForm';
 
+import '../style/modal&fullscreen.scss';
+
 const Modal = () => {
 
     const dispatch = useDispatch();

@@ -15,7 +15,12 @@ const ValidHouse = val =>{
     if(!(/(\d+|\d+[a-zA-Z]|\d+\/[a-zA-Z])$/gi).test(val) && val !== '') return false;
     return true;
 }
+const ValidPhone = val =>{
+    if(!(/^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$/gm).test(val)
+        && val !== '') return false;
+    return true;
+}
 
 export {
-    ValidMail, ValidPassword, ValidHouse, ValidString,
+    ValidMail, ValidPassword, ValidHouse, ValidString, ValidPhone
 };

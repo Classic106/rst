@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 import { ValidMail, ValidPassword, ValidString } from '../helpers';
 
@@ -8,6 +9,7 @@ const axios = require('axios').default;
 const RegistrationForm = ()=>{
     
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const [validLogin, setValidLogin] = useState(true);
     const [validEmail, setValidEmail] = useState(true);
@@ -36,9 +38,27 @@ const RegistrationForm = ()=>{
     }, [validLogin, validEmail, validPass, validConfirmPass])
 
     useEffect(()=>{
+        const valid = ValidPassword(pass);
+            valid ? setPassClass(1) : setPassClass(-1);
+        if(pass === '')setPassClass(0);
+        else valid ? setPassClass(1) : setPassClass(-1);
+        setValidPass(valid);
+        
+        setValidConfirmPass(confirmPass === pass);
+
+        if(confirmPass === '') setConfirmPassClass(0);
+        else confirmPass === pass ? setConfirmPassClass(1) : setConfirmPassClass(-1);
+    
+        if(validPass && validConfirmPass)
+            setDisabled(false);
+        else setDisabled(true);
+
+    }, [validPass, validConfirmPass, pass, confirmPass]);
+
+    useEffect(()=>{
        
         let timer = null;
-        //console.log(login !== '' , email  !== '');
+        
         if(login !== '' || email  !== ''){
             
             timer = setTimeout(() => {
@@ -100,31 +120,6 @@ const RegistrationForm = ()=>{
             setValidEmail(valid);
         }
     }
-    
-    const CheckPass = e =>{
-        
-        const { name, value } = e.target;
-        
-        if(name === 'password'){
-            setPass(value);
-            if(value === ''){
-                setPassClass(0);
-                return;
-            }
-            const valid = ValidPassword(value);
-            valid ? setPassClass(1) : setPassClass(-1);
-            setValidPass(valid);
-        }
-        else if(name === 'confirmPassword'){
-            setConfirmPass(value);
-            if(value === ''){
-                setConfirmPassClass(0);
-                return;
-            }
-            setValidConfirmPass(value === pass);
-            value === pass ? setConfirmPassClass(1) : setConfirmPassClass(-1)
-        }
-    }
 
     const Submit = e =>{
         
@@ -159,9 +154,11 @@ const RegistrationForm = ()=>{
         
         axios.post(`http://localhost:3001/users/reg`, user)
         .then(user => {
+
             sessionStorage.setItem('token', user.headers.authorization);
             dispatch({type: 'SET_USER', payload: user.data});
             dispatch({type: 'CLOSE_MODAL'});
+            history.push('/user');
         })
         .catch(err => {
             //console.log(err.message);
@@ -207,7 +204,7 @@ const RegistrationForm = ()=>{
                     })()}
                     type="password"
                     name="password"
-                    onChange={CheckPass}
+                    onChange={e => setPass(e.target.value)}
                     placeholder="Enter password"
                 />
             </label>
@@ -220,7 +217,7 @@ const RegistrationForm = ()=>{
                     })()}
                     type="password"
                     name="confirmPassword"
-                    onChange={CheckPass}
+                    onChange={e => setConfirmPass(e.target.value)}
                     placeholder="Enter confirm password"
                 />
             </label>

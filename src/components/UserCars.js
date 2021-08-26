@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import EditCarItem from './EditCarItem';
+
+import '../style/user_cars.scss';
 
 const axios = require('axios').default;
 
-const UserCars = ({carsId})=>{
+const UserCars = ()=>{
 
-    const [cars, setCars] = useState([]);
+    const { user } = useSelector(store => store.user);
 
-    useEffect(async ()=>{
-        let cars = [];
-        for(let id of carsId){
-            await axios.get('http://localhost:3001/carss/'+id)
-            .then(car => cars.push(car))
-            .catch(err => {
-                //console.log(err.message);
-            }); 
-        }
-        setCars(cars);
-    }, [setCars]);
-
-    return(<div>
+    return(<div className='user_cars'>
         {
-            cars.length === 0 ? <span>Empty</span> : cars.map(car => <div>{car.model}</div>)
+            user.carsId.length === 0 ?
+                <span className='empty'>Empty</span> :
+                    user.carsId.map(car => <EditCarItem car={car} key={car._id}/>)
         }
     </div>)
 }

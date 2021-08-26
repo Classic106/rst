@@ -1,0 +1,52 @@
+.car_item{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+    border: 1px solid #fff;
+    overflow: hidden;
+    margin: 10px 0;
+
+    .wrap_car_img{
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        align-items: center;
+
+        img{
+            width: 100%;
+            display: flex;
+            height: auto;
+        }
+    }
+    .car_description{
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px;
+        margin-bottom: 15px;
+
+        h3{
+            width: 100%;
+        }
+        .car_description_items{
+            display: flex;
+            width: 100%;
+            flex-grow: 5;
+        }
+        .car_item_left, .car_item_right{
+            display:flex;
+            flex-direction: column;
+            width: 50%;
+            
+            p{
+                margin: 5px;
+            }
+        }
+        .temp_car_buttons{
+            display: flex;
+            width: 100%;
+            justify-content: end;
+        }
+    }
+}

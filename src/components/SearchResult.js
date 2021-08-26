@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-
-import CarItem from "./CarItem";
+//import CarItem from "./CarItem";
 import NarrowSearchForm from './NarrowSearchForm';
 
-const SearchResult = () => {
-   
+import '../style/search_result.scss';
+
+const SearchResult = ({ CarItem, exact }) => {
+    
     const { searchResult } = useSelector(store => store.search);
-    const [result, setResult] = useState([]);
+    const [result, setResult] = useState(searchResult);
     const [page, setPage] = useState(0);
     const [disabledBack, setDisabledBack] = useState(true);
     const [disabledNext, setDisabledNext] = useState(false);
@@ -18,22 +19,25 @@ const SearchResult = () => {
     const [byYear, setByYear] = useState(0);
 
     const dispatch = useDispatch();
-
+    
+    console.log(searchResult);
     useEffect(()=>{
         setResult(searchResult);
     }, [searchResult])
     
     const Back = ()=>{
+        //console.log(page)
         if(page !== 0) {
+            setDisabledNext(false);
             setPage(page-1);
-            if(disabledNext) setDisabledNext(false);
         }else setDisabledBack(true);
     };
     
     const Next = ()=>{
-        if(page <= (result.length/6)){
+        //console.log(page)
+        if(page <= (result.length/6)-1){
+            setDisabledBack(false);
             setPage(page+1);
-            if(disabledBack) setDisabledBack(false);
         }else setDisabledNext(true); 
     };
     
@@ -88,7 +92,7 @@ const SearchResult = () => {
                 if(byDate === 1) setResult([...searchResult].sort(byDateUp));
                 if(byDate === 2) setResult([...searchResult].sort(byDateDown));
                 setByDate((byDate+1) === 3 ? 0 : byDate+1);
-                return;
+                break;
 
             case 'price':
                 
@@ -96,7 +100,7 @@ const SearchResult = () => {
                 if(byPrice === 1) setResult([...searchResult].sort(byPriceUp));
                 if(byPrice === 2) setResult([...searchResult].sort(byPriceDown));
                 setByPrice((byPrice+1) === 3 ? 0 : byPrice+1);
-                return;
+                break;
 
             case 'year': 
 
@@ -104,7 +108,7 @@ const SearchResult = () => {
                 if(byYear === 1) setResult([...searchResult].sort(byYearUp));
                 if(byYear === 2) setResult([...searchResult].sort(byYearDown));
                 setByYear((byYear+1) === 3 ? 0 : byYear+1);
-                return;
+                break;
 
             case 'mileage':
 
@@ -116,12 +120,15 @@ const SearchResult = () => {
 
             default:
                 console.log('Wrong sort');
+                break;
         }
     }
-
+    
     return(
         <div className='search_result'>
-            <div className='cars_result'>
+        {
+            result.length === 0 ? <div className='empty'>Empty list</div> : <>
+            <div className={exact ? 'cars_result' : 'cars_result admin'}>
                 <div className='sort_items'>
                     <span>Sort by:</span>
                     <span onClick={Sort}>date</span>
@@ -155,7 +162,11 @@ const SearchResult = () => {
                     </div>
                 }
             </div>
-            <NarrowSearchForm />
+               </>
+        }
+            {
+                exact ? <NarrowSearchForm /> : ''
+            }
         </div>
     )
 }

@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+//import StickyBox from "react-sticky-box";
 
 const axios = require('axios').default;
 
 const NarrowSearchForm = ()=>{
-  
+
+  const dispatch = useDispatch();
+
   const { searchItems } = useSelector(store => store.search);
   const [userChoise, setUserChoise] = useState(useSelector(store => store.search.userChoise));
 
   const [index, setIndex] = useState('-1');
   const [addSittings, setAddSittings] = useState(false);
-  const dispatch = useDispatch();
-
+  //const [top, setTop] = useState(0);
+  
   const changeCouise = e => {
     const {name, value} = e.target;
     
@@ -37,7 +40,7 @@ const NarrowSearchForm = ()=>{
       setIndex(''+index);
     }
 
-    return(()=>dispatch({type: "REMOVE_USER_CHOISE"}))
+    //return(()=>dispatch({type: "REMOVE_USER_CHOISE"}))
 
   }, [userChoise, searchItems]);
 
@@ -45,11 +48,14 @@ const NarrowSearchForm = ()=>{
     const select = document.querySelectorAll('select');
     const input = document.querySelectorAll('input');
    
-    for(let key = 0; key < select.length; key++) select[key].value = '-1';
+    for(let key = 0; key < select.length; key++) select[key].value = '';
     for(let key = 0; key < input.length; key++) {
         if(input[key].type === 'checkbox') input[key].checked = false;
         if(input[key].type === 'text') input[key].value = '';
       }
+    setUserChoise({});
+    dispatch({type: "REMOVE_USER_CHOISE"});
+    localStorage.removeItem('userChoise');
   }
 
   const Submit = e =>{
@@ -59,6 +65,7 @@ const NarrowSearchForm = ()=>{
     const obj = {
       engine: ['0', Number.MAX_VALUE],
       year: ['0', Number.MAX_VALUE],
+      price: ['0', Number.MAX_VALUE],
     };
     const choise = {};
 
@@ -66,34 +73,33 @@ const NarrowSearchForm = ()=>{
       
       choise[key] = val;
 
-      if(val === '-1' || val === '') return;
+      if(!val) return;
+      else if(e.target[key].type === 'checkbox') 
+        obj[e.target[key].name] = e.target[key].checked;
       else if(key === 'price') {
         const p = val.split('-');
         let price = ['0', Number.MAX_VALUE];
         price[0] = p[0];
         price[1] = (p[1] === '0') ? Number.MAX_VALUE : p[1];
-        obj[key] = price;
+        obj.price = price;
       }
       else if(key === 'city' && val !== '') obj[key] = val.replace(/{|}|,|\.|;|\\|:|\//gi, '');
       else if(key === 'yearFrom' || key === 'yearTo'){
-        let year = [0, Number.MAX_VALUE];
-        if(key === 'yearFrom') year[0] = val;
-        if(key === 'yearTo') year[1] = (val === '0') ? Number.MAX_VALUE : val;
-        obj.year = year;
+        if(key === 'yearFrom') obj.year[0] = val;
+        if(key === 'yearTo') obj.year[1] = (val === '0') ? Number.MAX_VALUE : val;
         return;
       }
       else if(key === 'engineFrom' || key === 'engineTo'){
-        let engine = [0, Number.MAX_VALUE];
-        if(key === 'engineFrom') engine[0] = val;
-        if(key === 'engineTo') engine[1] = (val === '-1') ? Number.MAX_VALUE : val;
-        obj.engine = engine;
+        if(key === 'engineFrom') obj.engine[0] = val;
+        if(key === 'engineTo') obj.engine[1] = (val === '0') ? Number.MAX_VALUE : val;
         return;
       }
       else obj[key] = val;
     });
-    //console.log(obj)
+   
     axios.post('http://localhost:3001/cars', obj)
     .then(cars => {
+      //console.log(cars)
       if(cars.data.length !== 0){
         localStorage.setItem('userChoise', JSON.stringify(choise));
         dispatch({type: "SET_USER_CHOISE", payload: choise});
@@ -108,8 +114,12 @@ const NarrowSearchForm = ()=>{
   }
 
   return (
-    <form className="search_form narrow_form" onSubmit={Submit}>
-    
+       // <StickyBox>
+    <div className='narrow_container'>
+    <form
+      className="search_form narrow_form"
+      onSubmit={Submit}
+    >
       <div className="search_header">
         <h3>Search cars</h3>
       </div>
@@ -117,7 +127,7 @@ const NarrowSearchForm = ()=>{
       <label>
         Manufacturer
         <select name="manufacturer" onChange={changeCouise} value={userChoise.manufacturer}>
-          <option value='-1'>----</option>
+          <option value=''>----</option>
           {
             searchItems.map((val, index) =>
               <option
@@ -138,7 +148,7 @@ const NarrowSearchForm = ()=>{
           value={userChoise.model}
           onChange={changeCouise}
         >
-          <option value='-1'>----</option>
+          <option value=''>----</option>
           {(index !== '-1' && searchItems.length) ? searchItems[+index].models
             .map(val => <option key={val} value={val}>{val}</option>) : ''
           }
@@ -158,7 +168,7 @@ const NarrowSearchForm = ()=>{
       <label>
         Price
         <select tabIndex="6" name="price" value={userChoise.price} onChange={changeCouise}>
-          <option value="0-0">----</option>
+          <option value="">----</option>
           <option value="0-300">$0 - $300</option>
           <option value="300-500">$300 - $500</option>
           <option value="500-1000">$500 - $1'000</option>
@@ -199,7 +209,7 @@ const NarrowSearchForm = ()=>{
         Year
         <div className='year_label'>
         <select name="yearFrom" value={userChoise.yearFrom} onChange={changeCouise}>
-          <option value='-1'>from</option>
+          <option value=''>from</option>
           {(() => {
             let arr = [];
             for (let key = 1930; key <= new Date().getFullYear(); key++)
@@ -212,7 +222,7 @@ const NarrowSearchForm = ()=>{
           })()}
         </select>
         <select name="yearTo" value={userChoise.yearTo} onChange={changeCouise}>
-          <option value='-1'>to</option>
+          <option value=''>to</option>
           {(() => {
             let arr = [];
             for (let key = new Date().getFullYear(); key >= 1930; key--)
@@ -235,7 +245,7 @@ const NarrowSearchForm = ()=>{
       <label>
         Condition
         <select name="condition" value={userChoise.condition} onChange={changeCouise}>
-          <option value="-1">----</option>
+          <option value="">----</option>
           <option value="New">New</option>
           <option value="No investment required">No investment required</option>
           <option value="Good condition">Good condition</option>
@@ -261,6 +271,8 @@ const NarrowSearchForm = ()=>{
           /> : ''}
 
     </form>
+    </div>
+   // </StickyBox>
   );
 };
 
@@ -273,7 +285,7 @@ const NarrowAdditionalSittings = ({ userChoise, changeCouise })=>{
         Engine
         <div className='engine_label'>
         <select name="engineFrom" value={userChoise.engineFrom} onChange={changeCouise}>
-          <option value='-1'>----</option>
+          <option value=''>----</option>
           {(() => {
             let arr = [];
             for (let key = 1; key <= 6.5; key += 0.5) arr.push(key);
@@ -281,7 +293,7 @@ const NarrowAdditionalSittings = ({ userChoise, changeCouise })=>{
           })()}
         </select>
         <select name="engineTo" value={userChoise.engineTo} onChange={changeCouise}>
-          <option value='-1'>----</option>
+          <option value=''>----</option>
           {(() => {
             let arr = [];
             for (let key = 1; key <= 6.5; key += 0.5) arr.push(key);
@@ -294,7 +306,7 @@ const NarrowAdditionalSittings = ({ userChoise, changeCouise })=>{
       <label>
         Fuel
         <select name="fuel" tabIndex="15" value={userChoise.fuel} onChange={changeCouise}>
-          <option value="-1">----</option>
+          <option value="">----</option>
           <option value="Petrol">Petrol</option>
           <option value="Diesel">Diesel</option>
           <option value="Petrol/Gas">Petrol/Gas</option>
@@ -306,7 +318,7 @@ const NarrowAdditionalSittings = ({ userChoise, changeCouise })=>{
       <label>
         Transmission
         <select name="transmission" value={userChoise.transmission} onChange={changeCouise}>
-          <option value="-1">----</option>
+          <option value="">----</option>
           <option value="Automat">Automat</option>
           <option value="Mechanic">Mechanic</option>
         </select>
@@ -315,7 +327,7 @@ const NarrowAdditionalSittings = ({ userChoise, changeCouise })=>{
       <label>
         Drive
         <select name="drive" value={userChoise.drive} onChange={changeCouise}>
-          <option value="-1">----</option>
+          <option value="">----</option>
           <option value="Front wheel">Front wheel</option>
           <option value="Rear wheel">Rear wheel</option>
           <option value="Full drive">Full drive</option>

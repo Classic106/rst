@@ -1,0 +1,19 @@
+.user{
+    
+    .user_header{
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+        padding: 20px 50px;
+
+        button{
+            white-space: nowrap;
+            min-width: max-content;
+        }
+    }
+    .user_main{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

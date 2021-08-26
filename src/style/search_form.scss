@@ -1,0 +1,72 @@
+.search_form{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 60%;
+    z-index: 1;
+    padding: 15px;
+    box-shadow: 0 2px 4px -1px #000;
+    background: #333 url('../images/rst-ua-carbon-texture.png') 0 0 repeat;
+    margin: 50px auto;
+    border-radius: 0 3px 3px 3px;
+    border: solid 3px #333;
+
+    label{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        select{
+            width: 50%;
+        }
+    }
+    .search_header{
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        
+        h3{
+            width: 75%;
+            text-align: center;
+        }
+        label{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 25%;
+            font-size: 10px;
+        }
+    }
+    .search_items, .search_checkboxes, .additional_settings{
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
+    .additional_settings{
+        display: flex;
+    }
+    .search_checkboxes{
+        width: 45%;
+        padding: 15px 0;
+
+        label{
+            flex-direction: row;
+        }
+    }
+    .search_buttons{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        div{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    }
+}

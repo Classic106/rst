@@ -1,0 +1,61 @@
+.search_result{
+
+    display: flex;
+    width: 100%;
+
+    .cars_result.admin{
+        width: 100%;
+    }
+    .cars_result{
+        width: 75%;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+
+        .sort_items{
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            padding: 10px 60px;
+        }
+        .search_ressult_pages{
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            
+            span{
+                display: flex;
+                align-items: center;
+                padding: 0 10px;
+            }
+        }
+    }
+    .narrow_container{
+        width: 25%;
+        position: relative;
+
+        .narrow_form{
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            width: 100%;
+            margin: 0;
+            
+            .search_button{
+                padding: 15px;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+            label{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                
+                select{
+                    width: 45%;
+                }
+            }
+        }
+    }
+}

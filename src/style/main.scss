@@ -11,6 +11,22 @@ body{
     justify-content: center;
     background: #000000db;
 }
+.application{
+    max-width: 980px;
+    color: white;
+    background: rgba(1, 11, 160, 0.877);
+    border-radius: 0 0 3px 3px;
+    border: solid 1px #AAA;
+    box-shadow: 0 0 30px 0 #333;
+}
+.main_container{
+    display: flex;
+    /*justify-content: space-around;*/
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+}
 button{
     height: 25px;
     margin: 5px;
@@ -100,475 +116,6 @@ img{
 .year_label, .engine_label{
     display: flex;
 }
-.application{
-    max-width: 980px;
-    color: white;
-    background: rgba(1, 11, 160, 0.877);
-    border-radius: 0 0 3px 3px;
-    border: solid 1px #AAA;
-    box-shadow: 0 0 30px 0 #333;
-}
-.header_container{
-    
-    display:flex;
-    justify-content: space-around;
-    align-items: center;
-    
-    img{
-        width: 100px;
-    }
-    p{
-        display: flex;
-        flex-direction: column;
-        padding: 15px;
-    }
-    div{
-        display: flex;
-        padding: 15px;
-    }
-    .header_buttons{
-        display: flex;
-        flex-direction: column;
-    }
-}
-.main_container{
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-
-    .search_form{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-        width: 60%;
-        z-index: 1;
-        padding: 15px;
-        box-shadow: 0 2px 4px -1px #000;
-        background: #333 url('../images/rst-ua-carbon-texture.png') 0 0 repeat;
-        margin: 50px auto;
-        border-radius: 0 3px 3px 3px;
-        border: solid 3px #333;
-
-        label{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-
-            select{
-                width: 50%;
-            }
-        }
-        .search_header{
-            display: flex;
-            width: 100%;
-            justify-content: center;
-            
-            h3{
-                width: 75%;
-                text-align: center;
-            }
-            label{
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                width: 25%;
-                font-size: 10px;
-            }
-        }
-        .search_items, .search_checkboxes, .additional_settings{
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
-        .additional_settings{
-            display: flex;
-        }
-        .search_checkboxes{
-            width: 45%;
-            padding: 15px 0;
-
-            label{
-                flex-direction: row;
-            }
-        }
-        .search_buttons{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-
-            div{
-                width: 100%;
-                display: flex;
-                justify-content: center;
-            }
-        }
-    }
-    .search_result{
-        display: flex;
-        width: 100%;
-
-        .cars_result{
-            width: 75%;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-
-            .sort_items{
-                display: flex;
-                width: 100%;
-                justify-content: space-between;
-                padding: 10px 60px;
-            }
-            .search_ressult_pages{
-                display: flex;
-                justify-content: center;
-                padding: 10px;
-                
-                span{
-                    display: flex;
-                    align-items: center;
-                    padding: 0 10px;
-                }
-            }
-            .car_item{
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                border-radius: 10px;
-                border: 1px solid #fff;
-                overflow: hidden;
-                margin: 10px 0;
-
-                .wrap_car_img{
-                    display: flex;
-                    justify-content: center;
-
-                    img{
-                        width: 100%;
-                        display: flex;
-                        height: auto;
-                    }
-                }
-                .car_description{
-                    width: 80%;
-                    display: flex;
-                    flex-direction: column;
-                    padding: 0 20px;
-                    margin-bottom: 15px;
-                    
-                    h3{
-                        width: 100%;
-                    }
-                    .car_description_items{
-                        display: flex;
-                        width: 100%;
-                    }
-                    .car_item_left, .car_item_right{
-                        display:flex;
-                        flex-direction: column;
-                        width: 50%;
-                        
-                        p{
-                            margin: 5px;
-                        }
-                    }
-                }
-            }
-        }
-        .narrow_form{
-            display: flex;
-            flex-direction: column;
-            width: 25%;
-            margin: 0;
-            
-            .search_button{
-                padding: 15px;
-                width: 100%;
-                display: flex;
-                justify-content: center;
-            }
-            label{
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                
-                select{
-                    width: 45%;
-                }
-            }
-        }
-    }
-    .user{
-        .user_header{
-            display: flex;
-            width: 100%;
-            justify-content: space-around;
-            padding: 20px 50px;
-
-            button{
-                white-space: nowrap;
-                min-width: max-content;
-            }
-        }
-    }
-    .show_car{
-        display: flex;
-        flex-direction: column;
-        
-        h3{
-            text-align: center;
-        }
-        .show_car_item{
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            flex-direction: column;
-            
-            .wrap_car_img{
-                width: 85%;
-                display: flex;
-                overflow: hidden;
-                margin: auto;
-            }
-            .show_car_info{
-                width: 100%;
-                padding: 20px;
-                display: flex;
-                
-                h3{
-                    width: 100%;
-                }
-                .show_car_characteristics, .show_car_description{
-                    display: flex;
-                    width: 100%;
-                    justify-content: center;
-                    flex-direction: column;
-                    
-                    div{
-                        display: flex;
-
-                        .show_car_characteristic{
-                            display: flex;
-                            flex-direction: column;
-                            width: 50%;
-                            justify-content: center;
-                            align-items: center;
-                        }
-                    }
-                }
-                .show_car_contact{
-                    display: flex;
-                    width: 100%;
-                    flex-direction: column;
-                    align-items: center;
-                    div{
-                        flex-grow: 4;
-                    }
-                }
-            }
-        }
-    }
-    .add_car{
-        /*display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;*/
-        section{
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-
-            h3{
-                align-self: center;
-            }
-            article, header{
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 10px 40px;
-
-                p{
-                    text-align: center;
-                }
-            }
-            .add_car_form{
-                display: flex;
-                flex-direction: column;
-                
-                button {
-                    align-self: center;
-                    margin: 25px 0;
-                }
-                div{
-                    display: flex;
-                    
-                    .form_left, .form_right{
-                        display: flex;
-                        flex-direction: column;
-                        width: 50%;
-                        padding: 20px 80px;
-                        
-                        label{
-                            display: flex;
-                            flex-direction: row;
-                            justify-content: space-between;
-                            padding: 5px;
-
-                            input, select, textarea{
-                                width: 50%;
-                                margin: 0;
-                            }
-                        }
-                    }
-                }
-                .car_descr{
-                    display: flex;
-                    flex-direction: column;
-                    align-self: center;
-                    align-items: center;
-                    width: 100%;
-
-                    textarea{
-                        margin: 10px 0;
-                        border-radius: 5px;
-                        max-width: 80%;
-                        min-width: 80%;
-                        min-height: 50px;
-                        max-height: 200px;
-                    }
-                }
-            }
-        }
-    }
-}
-.modal_page, .fullscreen{
-    display: flex;
-    position: fixed;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    background: #01010183;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-.fullscreen{
-    justify-content: space-between;
-    align-items: center;
-
-    .wrap_slider{
-        display: flex;
-        width: 75%;
-        margin: auto;
-    }
-}
-.enter_form {
-    text-align: center;
-    padding: 20px;
-    width: 350px;
-    background: white;
-    border-radius: 3px;
-    box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    
-    h3 {
-        margin: -20px -20px 21px;
-        line-height: 40px;
-        font-size: 15px;
-        font-weight: bold;
-        padding: 10px 0;
-        color: #555;
-        text-align: center;
-        text-shadow: 0 1px white;
-        background: #f3f3f3;
-        border-bottom: 1px solid #cfcfcf;
-        border-radius: 3px 3px 0 0;
-        background-image: linear-gradient(to bottom, whiteffd, #eef2f5);
-        box-shadow: 0 1px whitesmoke;
-    }
-    label{
-        margin: 20px 0 0;
-        width: 100%;
-    }
-    label:first-of-type{
-        margin-top: 0;
-        color:red;
-    }
-    input[type=text], input[type=password] {
-        width: 100%;
-    }
-    .login, .password, .email {
-        margin: 5px;
-        padding: 0 10px;
-        height: 40px;
-        color: #404040;
-        background: #fff;
-        text-align: center;
-        border: 1px solid;
-        border-color: #c4c4c4 #d1d1d1 #d4d4d4;
-        border-radius: 2px;
-        outline: 5px solid #eff4f7;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
-    }
-    .login.invalid, .password.invalid, .email.invalid {
-        background: #f4b9b9;
-        outline: 5px solid #ffe4e4;
-    }
-    .login.valid, .password.valid, .email.valid {
-        background: #c7ffbf;
-        outline: 5px solid #a5fda2;
-    }
-    .enter_button{
-        width: 100%;
-        height: 30px;
-        display: flex;
-        margin-top: 15px;
-        justify-content: center;
-    }
-}
-.footer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .buttons{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        background: #333 url('../images/rst-ua-horizontal-gradients.png') 0 0 repeat-x;
-        height: 26px;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        
-        li{
-            width: 49%;
-            text-align: center;
-        }
-        hr{
-            height: 100%;
-        }
-    }
-
-    p{
-        text-align: center;
-        padding: 0 50px;
-    }
-}
-
 .button {
     width: 100px;
     display: inline-block;
@@ -595,9 +142,26 @@ img{
         border-bottom: 1px solid rgb(25,34,45);
         background: rgb(53,61,71);
         box-shadow:
-         inset 0 1px 3px rgba(0,10,20,.5),
-         0 1px rgb(83,94,104),
-         0 0 1px rgb(86,96,106);
+            inset 0 1px 3px rgba(0,10,20,.5),
+            0 1px rgb(83,94,104),
+            0 0 1px rgb(86,96,106);
         pointer-events: none;
     }
+}
+.button.delete{
+    background: red;
+    border: 1px solid red;
+    text-shadow: none;
+    box-shadow:
+        inset 0 1px red,
+        inset 0 0 1px rgba(140,150,170,.8),
+        0 1px rgb(83,94,104),
+        0 0 1px rgb(86,96,106);
+    &:focus:not(:active) {
+        background: red;
+        border: 1px solid red;
+    }
+}
+.empty{
+    margin: 200px auto;
 }

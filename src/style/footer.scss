@@ -1,0 +1,30 @@
+.footer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .buttons{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background: #333 url('../images/rst-ua-horizontal-gradients.png') 0 0 repeat-x;
+        height: 26px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        
+        li{
+            width: 49%;
+            text-align: center;
+        }
+        hr{
+            height: 100%;
+        }
+    }
+
+    p{
+        text-align: center;
+        padding: 0 50px;
+    }
+}

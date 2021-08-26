@@ -1,0 +1,47 @@
+.user_profile{
+    
+    background: url('../images/rst-ua-carbon-texture.png');
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 34%;
+
+        label{
+            justify-content: space-between;
+            display: flex;
+            width: 100%;
+            margin: 10px;
+            align-items: center;
+        }
+    }
+    .name, .login, .password, .email, .phone {
+        color: #404040;
+        background: #fff;
+        text-align: center;
+        border: 1px solid;
+        border-color: #c4c4c4 #d1d1d1 #d4d4d4;
+        border-radius: 2px;
+        outline: 2px solid #eff4f7;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+    .name.invalid, .login.invalid, .password.invalid, .email.invalid, .phone.invalid {
+        background: #f4b9b9;
+        outline: 2px solid #ffe4e4;
+    }
+    .name.valid, .login.valid, .password.valid, .email.valid, .phone.valid {
+        background: #c7ffbf;
+        outline: 2px solid #a5fda2;
+    }
+    .enter_button{
+        width: 100%;
+        height: 30px;
+        display: flex;
+        margin-top: 15px;
+        justify-content: center;
+    }
+}

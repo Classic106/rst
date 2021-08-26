@@ -1,14 +1,33 @@
 const express = require('express');
 
-const carsController = require('./controller');
+const {
+    postItem,
+    postAdd,
+    postUploadTemp,
+    postAddTemp,
+    getByUser,
+    deletePicTemp,
+    deleteTempItem,
+    publicTempItem,
+    //getById,
+    getTemp,
+    deleteItem,
+    patchItem,
+} = require('./controller');
 
 const carsRouter = express.Router();
 
-//carsRouter.get('/', ()=>{}/*carsController.post*/);
-carsRouter.post('/', carsController.post);
-carsRouter.post('/add', carsController.postAdd);
-carsRouter.get('/:id', carsController.getById);
-carsRouter.delete('/:id', carsController.delete);
-carsRouter.patch('/:id', carsController.patch);
+carsRouter.post('/', postItem);
+carsRouter.post('/add', postAdd);
+carsRouter.post('/addTemp', postAddTemp);
+carsRouter.get('/', getByUser);
+carsRouter.get('/temp', getTemp);
+carsRouter.post('/uploadTemp/:id', postUploadTemp);
+carsRouter.post('/deletePicTemp/:id', deletePicTemp);
+carsRouter.delete('/deleteTempItem/:id', deleteTempItem);
+carsRouter.post('/publicTempItem/:id', publicTempItem);
+//carsRouter.get('/:id', getById);
+carsRouter.delete('/:id', deleteItem);
+carsRouter.patch('/:id', patchItem);
 
 module.exports = carsRouter;

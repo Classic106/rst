@@ -1,3 +1,5 @@
+import '../style/footer.scss';
+
 const Footer = () => {
     return <div className='footer'>
       <ul className='buttons'>

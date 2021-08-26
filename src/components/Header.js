@@ -2,6 +2,8 @@ import Logo from '../images/rst-ua-logo.svg';
 
 import { useSelector, useDispatch } from "react-redux";
 
+import '../style/header_container.scss';
+
 const Header = ()=>{
 
   const dispatch = useDispatch();

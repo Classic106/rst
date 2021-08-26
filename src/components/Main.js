@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 
 import '../style/main.scss';
@@ -7,17 +7,19 @@ import '../style/main.scss';
 import User from './User';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
+import CarItem from './CarItem';
 import ShowCar from './ShowCar';
+import ShowNewCar from './ShowNewCar';
 import Loader from './Loader';
 
 const axios = require('axios').default;
 
-const Main = () => {
+const Main = ({loader, setLoader}) => {
 
-  const [loader, setLoader] = useState(true);
   const { user } = useSelector(store => store.user);
-  const { searchResult } = useSelector(store=>store.search);
-  const { userChoise } = useSelector(store=>store.search);
+  const { searchResult } = useSelector(store => store.search);
+  const { userChoise } = useSelector(store => store.search);
+
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -34,6 +36,7 @@ const Main = () => {
         const obj = {
           engine: ['0', Number.MAX_VALUE],
           year: ['0', Number.MAX_VALUE],
+          price: ['0', Number.MAX_VALUE],
         };
         
         for(let [key, val] of Object.entries(choise)){
@@ -41,10 +44,8 @@ const Main = () => {
           if(val === '-1' || val === '') continue;
           else if(key === 'price') {
             const p = val.split('-');
-            let price = ['0', Number.MAX_VALUE];
-            price[0] = p[0];
-            price[1] = (p[1] === '0') ? Number.MAX_VALUE : p[1];
-            obj[key] = price;
+            obj.price[0] = p[0];
+            obj.price[1] = (p[1] === '0') ? Number.MAX_VALUE : p[1];
           }
           else if(key === 'city' && val !== '') obj[key] = val.replace(/{|}|,|\.|;|\\|:|\//gi, '');
           else if(key === 'yearFrom' || key === 'yearTo'){
@@ -86,13 +87,12 @@ const Main = () => {
         alert('Something wrong. Repeat request');
         //return err
       });
-      setLoader(false);
     }
     Func();
   }, []);
 
   if(loader) return(<div className="main_container"><Loader /></div>);
- 
+
   return (
     <div className="main_container">
        <Switch>
@@ -107,11 +107,16 @@ const Main = () => {
           />
           <Route exact path='/user' component={User}/>
           <Route exact path='/search'
-            component={()=><SearchForm setLoader={setLoader}/>}
+            component={()=><SearchForm />}
           />
-          <Route exact path='/result' component={SearchResult}/>
+          <Route exact path='/result'
+            component={()=><SearchResult CarItem={CarItem} exact/>}
+          />
           <Route path='/result/:id'
             component={({match})=><ShowCar id={match.params.id}/>}
+          />
+          <Route path='/tempresult/:id'
+            component={({match})=><ShowNewCar id={match.params.id}/>}
           />
         </Switch>
     </div>

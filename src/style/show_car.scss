@@ -1,0 +1,62 @@
+.show_car{
+    display: flex;
+    flex-direction: column;
+    
+    h3{
+        text-align: center;
+    }
+    .show_car_item{
+        display: flex;
+        justify-content: space-around;
+        padding: 15px;
+        flex-direction: column;
+        
+        .wrap_car_img{
+            width: 85%;
+            display: flex;
+            overflow: hidden;
+            margin: auto;
+        }
+        .show_car_info{
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            
+            h3{
+                width: 100%;
+            }
+            .show_car_characteristics, .show_car_description{
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                flex-direction: column;
+                
+                div{
+                    display: flex;
+
+                    .show_car_characteristic{
+                        display: flex;
+                        flex-direction: column;
+                        width: 50%;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                }
+            }
+        }
+        .show_car_contact{
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+
+            div{
+                flex-grow: 4;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                align-items: center;
+            }
+        }
+    }
+}

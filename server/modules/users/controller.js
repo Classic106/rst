@@ -33,23 +33,23 @@ class Controller{
             res.status(401).json({message: err.message});
         }
     }
-    async getById(req, res){
+    /*async getById(req, res){
         /*const { authorization } = req.headers;
 
         if(!authorization){
             res.status(401).json({message: 'Authorization failed'});
             return;
-        }*/
+        }
 
         try{
             const { id } = req.params;
-            const user = await Models.getById(id/*, authorization*/);
+            const user = await Models.getById(id/*, authorization);
             if(user instanceof Error) throw user;
             res.json(user);
         }catch(err){
             res.status(404).json({message: err.message});
         }
-    }
+    }*/
 
     async postRegistration(req, res){
         try{
@@ -61,12 +61,36 @@ class Controller{
             
             body.isDeleted = false;
             body.isAdmin = false;
-            body.name = '';
             
             const user = await Models.postRegistration(body);
             if(user instanceof Error) throw user;
             res.header('Authorization', user.token);
             res.json(user.user);
+        }catch(err){
+            res.status(401).json({message: err.message});
+        }
+    }
+    async postRegistrationAdmin(req, res){
+        try{
+            const { body } = req;
+            const { authorization } = req.headers;
+        
+            if(!authorization){
+                res.status(403).json({message: 'Authorization failed'});
+                return;
+            }
+        
+            if(!body.email || !body.password || !body.login) {
+                res.status(402).json({message: 'Fields is not defined'});
+                return;
+            }
+            
+            body.isDeleted = false;
+            body.isAdmin = true;
+            
+            const result = await Models.postRegistrationAdmin(body, authorization);
+            if(result instanceof Error) throw result;
+            res.json(result);
         }catch(err){
             res.status(401).json({message: err.message});
         }
@@ -107,7 +131,7 @@ class Controller{
             res.status(404).json({message: err.message});
         }
     }
-    async delete(req, res){
+    async deleteUser(req, res){
                 
         const { authorization } = req.headers;
         
@@ -125,7 +149,7 @@ class Controller{
             res.status(404).json({message: err.message});
         }
     }
-    async patch(req, res){
+    async patchUser(req, res){
                 
         const { authorization } = req.headers;
 

@@ -1,0 +1,86 @@
+.car_description{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+    margin-bottom: 15px;
+
+    div{
+        h3{
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+
+            input{
+                text-align: center;
+            }
+            input[type='text']:disabled{
+                text-align: center;
+                background: none;
+                color: #fff;
+                margin: 4px;
+                border: none;
+            }
+        }
+    }
+    .car_description_items{
+        display: flex;
+        width: 100%;
+        flex-grow: 5;
+    }
+    .car_item_left, .car_item_right{
+        display:flex;
+        flex-direction: column;
+        width: 50%;
+        
+        label{
+            margin: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            input, select{
+                width: 50%;
+                text-align: center;
+                margin: 0;
+            }
+            input[type='text']:disabled, textarea.disabled{
+                text-align: center;
+                background: none;
+                color: #fff;
+                margin: 6px;
+                border: none;
+            }
+        }
+    }
+    .car_descr{
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        
+        textarea{
+            margin: 10px 0;
+            border-radius: 5px;
+            max-width: 100%;
+            min-width: 100%;
+            min-height: 30px;
+            max-height: 100px;
+            text-align: center;
+        }
+        textarea:disabled{
+            text-align: center;
+            background: none;
+            color: #fff;
+            margin: 6px;
+            border: none;
+        }
+    }
+    .temp_car_buttons{
+        display: flex;
+        width: 100%;
+        padding-top: 10px;
+        justify-content: end;
+    }
+}

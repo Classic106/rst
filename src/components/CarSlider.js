@@ -1,4 +1,5 @@
 import React, {  Component } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
@@ -24,26 +25,20 @@ const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
   >{'>'}</button>
 )*/
 
-export default class SimpleSlider extends Component {
+const SimpleSlider = ({ images, exact })=> {
   
-  constructor(props){
-    super(props);
-    this.images = props.images;
-    this.exact = props.exact;
-    //this.images = ['dsfsfs','sdfsfsf'];
-  }
-  render() {
-    const settings = this.exact ? {
+    const settings = exact ? {
       //dots: true,
       infinite: true,
-      speed: 10000,
+      speed: 1000,
       slidesToShow: 1,
       slidesToScroll: 1,
       autoplay: true,
       arrows: false,
-      autoplaySpeed: 10000,
+      autoplaySpeed: 3000,
       pauseOnDotsHover: true,
       fade: true,
+      initialSlide: 0,
       cssEase: 'linear'
       //adaptiveHeight: true,
     } : {
@@ -51,23 +46,26 @@ export default class SimpleSlider extends Component {
       slidesToShow: 1,
       slidesToScroll: 1,
       arrows: true,
+      //initialSlide: this.initSlide,
       //adaptiveHeight: true,
       /*prevArrow: <SlickArrowLeft />,
       nextArrow: <SlickArrowRight />,*/
     };
-
-    if(!this.images || this.images.length === 0)
-      return <img src='https://i.rst.ua/no-photo.png' alt='carImage'/>;
     
     return (
         <Slider {...settings}>
         {
-          this.images.map(img => 
-            <div className='slider_image_wrap' key={img}>
-              <img src={img} alt="alt"/>
-            </div>)
+          images.map((img, index) => {
+            return <div
+              className='slider_image_wrap'
+              key={img}
+            >
+              <img src={img}  alt="alt"/>
+            </div>
+            })
         }
         </Slider>
     );
-  }
 }
+
+export default SimpleSlider;

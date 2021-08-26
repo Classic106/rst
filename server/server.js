@@ -1,8 +1,11 @@
 require('dotenv').config();
+
+const fileUpload = require('express-fileupload');
 const mongoose = require("mongoose");
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+
 const Cars = require('./modules/cars/routes');
 const Users = require('./modules/users/routes');
 const SearchItems = require('./modules/searchCars/routes');
@@ -22,6 +25,7 @@ mongoose.connect(process.env.DB,
 
 const app = express();
 
+app.use(fileUpload());
 app.use(express.json());
 
 const corsOptions = {

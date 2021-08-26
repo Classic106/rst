@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from 'react-router-dom';
+
+import '../style/search_form.scss';
 
 const axios = require('axios').default;
 
@@ -9,7 +12,8 @@ const SearchForm = ({ setLoader }) => {
   const [addSittings, setAddSittings] = useState(false);
 
   const { searchItems } = useSelector(store => store.search);
-  //const { userChoise } = useSelector(store => store.search);
+
+  const history = useHistory();
   const dispatch = useDispatch();
   
   const Reset = ()=>{
@@ -21,6 +25,8 @@ const SearchForm = ({ setLoader }) => {
         if(input[key].type === 'checkbox') input[key].checked = false;
         if(input[key].type === 'text') input[key].value = '';
       }
+    dispatch({type: "REMOVE_USER_CHOISE"});
+    localStorage.removeItem('userChoise');
   }
   
   const ChangeMark = e => {
@@ -50,7 +56,9 @@ const SearchForm = ({ setLoader }) => {
       
       choise[key] = val;
 
-      if(val === '-1' || val === '') return;
+      if(!val) return;
+      else if(e.target[key].type === 'checkbox') 
+        obj[e.target[key].name] = e.target[key].checked;
       else if(key === 'price') {
         const p = val.split('-');
         let price = ['0', Number.MAX_VALUE];
@@ -60,28 +68,26 @@ const SearchForm = ({ setLoader }) => {
       }
       else if(key === 'city' && val !== '') obj[key] = val.replace(/{|}|,|\.|;|\\|:|\//gi, '');
       else if(key === 'yearFrom' || key === 'yearTo'){
-        let year = [0, Number.MAX_VALUE];
-        if(key === 'yearFrom') year[0] = val;
-        if(key === 'yearTo') year[1] = (val === '0') ? Number.MAX_VALUE : val;
-        obj.year = year;
+        if(key === 'yearFrom') obj.year[0] = val;
+        if(key === 'yearTo') obj.year[1] = (val === '0') ? Number.MAX_VALUE : val;
         return;
       }
       else if(key === 'engineFrom' || key === 'engineTo'){
-        let engine = [0, Number.MAX_VALUE];
-        if(key === 'engineFrom') engine[0] = val;
-        if(key === 'engineTo') engine[1] = (val === '-1') ? Number.MAX_VALUE : val;
-        obj.engine = engine;
+        if(key === 'engineFrom') obj.engine[0] = val;
+        if(key === 'engineTo') obj.engine[1] = (val === '0') ? Number.MAX_VALUE : val;
         return;
       }
       else obj[key] = val;
     });
-    
+    //console.log(obj)
     await axios.post('http://localhost:3001/cars', obj)
     .then(cars => {
+      //console.log(cars.data.length !== 0);
       if(cars.data.length !== 0){
         localStorage.setItem('userChoise', JSON.stringify(choise));
         dispatch({type: "SET_USER_CHOISE", payload: choise});
         dispatch({type: "SET_SEARCH_RESULT", payload: cars.data});
+        history.push('/result');
         return;
       }
       alert('Nothing found!!!');
@@ -106,7 +112,7 @@ const SearchForm = ({ setLoader }) => {
       <label>
         Manufacturer
         <select name="manufacturer" onChange={ChangeMark}>
-          <option value="-1">----</option>
+          <option value="">----</option>
           {
             searchItems.map((val, index) =>
               <option
@@ -125,7 +131,7 @@ const SearchForm = ({ setLoader }) => {
           name="model"
           disabled={index !== '-1' ? false : true}
         >
-          <option value="-1">----</option>
+          <option value="">----</option>
           {(index !== '-1' && searchItems.length) ? searchItems[+index].models
             .map(val => <option key={val} value={val}>{val}</option>) : ''
           }
@@ -177,7 +183,7 @@ const SearchForm = ({ setLoader }) => {
         Year
         <div className='year_label'>
         <select name="yearFrom">
-          <option value='-1'>from</option>
+          <option value=''>from</option>
           {(() => {
             let arr = [];
             for (let key = 1930; key <= new Date().getFullYear(); key++)
@@ -190,7 +196,7 @@ const SearchForm = ({ setLoader }) => {
           })()}
         </select>
         <select name="yearTo">
-          <option value='-1'>to</option>
+          <option value=''>to</option>
           {(() => {
             let arr = [];
             for (let key = new Date().getFullYear(); key >= 1930; key--)
@@ -243,7 +249,7 @@ const AdditionalSittings = ()=>{
           Engine
           <div className='engine_label'>
           <select name="engineFrom">
-            <option value='-1'>----</option>
+            <option value=''>----</option>
             {(() => {
               let arr = [];
               for (let key = 1; key <= 6.5; key += 0.5) arr.push(key);
@@ -251,7 +257,7 @@ const AdditionalSittings = ()=>{
             })()}
           </select>
           <select name="engineTo">
-            <option value='-1'>----</option>
+            <option value=''>----</option>
             {(() => {
               let arr = [];
               for (let key = 1; key <= 6.5; key += 0.5) arr.push(key);
@@ -263,8 +269,8 @@ const AdditionalSittings = ()=>{
 
         <label>
           Fuel
-          <select name="fuel" tabIndex="15">
-            <option value="-1">----</option>
+          <select name="fuel">
+            <option value="">----</option>
             <option value="Petrol">Petrol</option>
             <option value="Diesel">Diesel</option>
             <option value="Petrol/Gas">Petrol/Gas</option>
@@ -276,7 +282,7 @@ const AdditionalSittings = ()=>{
         <label>
           Condition
           <select name="condition">
-            <option value="-1">----</option>
+            <option value="">----</option>
             <option value="New">New</option>
             <option value="No investment required">No investment required</option>
             <option value="Good condition">Good condition</option>
@@ -291,7 +297,7 @@ const AdditionalSittings = ()=>{
         <label>
           Transmission
           <select name="transmission">
-            <option value="-1">----</option>
+            <option value="">----</option>
             <option value="Automat">Automat</option>
             <option value="Mechanic">Mechanic</option>
           </select>
@@ -300,7 +306,7 @@ const AdditionalSittings = ()=>{
         <label>
           Drive
           <select name="drive">
-            <option value="-1">----</option>
+            <option value="">----</option>
             <option value="Front wheel">Front wheel</option>
             <option value="Rear wheel">Rear wheel</option>
             <option value="Full drive">Full drive</option>

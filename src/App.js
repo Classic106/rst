@@ -16,6 +16,8 @@ function App() {
   const { modal } = useSelector(store => store.modal);
   const { open } = useSelector(store => store.fullscreen);
 
+  const [loader, setLoader] = useState(true);
+
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -25,13 +27,14 @@ function App() {
       if(token) axios.defaults.headers.common['Authorization'] = token;
 
       if(!user){
-        axios.get('http://localhost:3001/users/auth')
+        await axios.get('http://localhost:3001/users/auth')
         .then(user => dispatch({type: 'SET_USER', payload: user.data}))
         .catch(err => {
           //console.log(err.message);
           sessionStorage.removeItem('token');
         });  
       }
+      setLoader(false);
     }
     Func();
   }, []);
@@ -40,7 +43,7 @@ function App() {
     <div className='application'>
       <Header />
       <hr/>
-      <Main />
+      <Main loader={loader}/>
       <hr/>
       <Footer />
       {
