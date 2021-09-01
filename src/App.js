@@ -19,13 +19,13 @@ function App() {
   const [loader, setLoader] = useState(true);
 
   const dispatch = useDispatch();
-
+  
   useEffect(()=>{
     const Func = async ()=>{
 
       let token = await sessionStorage.getItem('token');
-      if(token) axios.defaults.headers.common['Authorization'] = token;
-
+      if(token) axios.defaults.headers.common['authorization'] = token;
+      
       if(!user){
         await axios.get('http://localhost:3001/users/auth')
         .then(user => dispatch({type: 'SET_USER', payload: user.data}))
@@ -37,7 +37,7 @@ function App() {
       setLoader(false);
     }
     Func();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className='application'>

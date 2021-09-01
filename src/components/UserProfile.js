@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import { ValidString, ValidMail, ValidPassword, ValidPhone } from '../helpers';
 
@@ -10,9 +11,11 @@ const axios = require('axios').default;
 const UserProfile = ()=>{
     
     const dispatch = useDispatch();
-    
+    const history = useHistory();
+
     const { user } = useSelector(store => store.user);
 
+    const [validLogin, setValidLogin] = useState(true);
     const [validName, setValidName] = useState(true);
     const [validEmail, setValidEmail] = useState(true);
     const [validPhone, setValidPhone] = useState(true);
@@ -20,6 +23,7 @@ const UserProfile = ()=>{
     const [validPass, setValidPass] = useState(true);
     const [validConfirmPass, setValidConfirmPass] = useState(true);
 
+    const [loginClass, setLoginClass] = useState(0);
     const [nameClass, setNameClass] = useState(0);
     const [emailClass, setEmailClass] = useState(0);
     const [phoneClass, setPhoneClass] = useState(0);
@@ -27,24 +31,48 @@ const UserProfile = ()=>{
     const [passClass, setPassClass] = useState(0);
     const [confirmPassClass, setConfirmPassClass] = useState(0);
 
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState(user.email);
-    const [phone, setPhone] = useState(user.phone);
-    const [additionalPhone, setAdditionalPhone] = useState(user.additionalPhone);
+    const [login, setLogin] = useState(user.login || '');
+    const [name, setName] = useState(user.name || '');
+    const [email, setEmail] = useState(user.email || '');
+    const [phone, setPhone] = useState(user.phone || '');
+    const [additionalPhone, setAdditionalPhone] = useState(user.additionalPhone || '');
     const [pass, setPass] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
 
     const [disabled, setDisabled] = useState(false);
     const [openPass, setopenPass] = useState(false);
-
+  
     useEffect(()=>{
         (
-            validName || validEmail || validPhone ||
-            validAdditionalPhone || validPass || validConfirmPass
+            validLogin && validName && validEmail && validPhone &&
+            validAdditionalPhone && validPass && validConfirmPass
         ) ? setDisabled(false) : setDisabled(true);
     }, [
-        validName, validEmail, validPhone,
+        validLogin, validName, validEmail, validPhone,
         validAdditionalPhone, validPass, validConfirmPass
+    ]);
+    
+    useEffect(()=>{
+
+       if(login === '') setLoginClass(0);
+       else validLogin ? setLoginClass(1) : setLoginClass(-1); 
+
+        if(name === '') setNameClass(0);
+        else validName ? setNameClass(1) : setNameClass(-1);
+
+        if(email === '') setEmailClass(0);
+        else validEmail ? setEmailClass(1) : setEmailClass(-1);
+
+        if(phone === '') setPhoneClass(0);
+        else validPhone ? setPhoneClass(1) : setPhoneClass(-1);
+
+        if(additionalPhone === '') setAdditionalPhoneClass(0);
+        else validAdditionalPhone ?
+            setAdditionalPhoneClass(1) : setAdditionalPhoneClass(-1);
+
+    }, [
+        login, validLogin, name, validName, email, validEmail,
+        phone, validPhone, additionalPhone, validAdditionalPhone 
     ]);
 
     useEffect(()=>{
@@ -67,67 +95,88 @@ const UserProfile = ()=>{
 
     const Submit = e =>{
         e.preventDefault();
-
-        const obj = {};
         
+        const obj = {};
+
+        if(login !== user.login) obj.login = login;
+        if(name !== user.name) obj.name = name;
+        if(email !== user.email) obj.email = email;
+        if(phone !== user.phone) obj.phone = phone;
+        if(additionalPhone !== user.additionalPhone)
+            obj.additionalPhone = additionalPhone;
         if(pass){
             if(validPass && validConfirmPass) obj.password = pass;
             else return;
         }
         
-        for(let k = 0; k < e.target.length-2; k++){
-            
-            if(e.target[k].name === 'password'){
-                if(e.target[k].value !== '')
-                    obj[e.target[k].name] = e.target[k].value;
-            }
-            else obj[e.target[k].name] = e.target[k].value;
-        }
-        
-        axios.patch(`http://localhost:3001/users/`+user._id, obj)
-        .then(user => {
-            dispatch({type: 'SET_USER', payload: user.data});
-            pass ? alert('Password changed!!!') : alert('Changes saved!!!');
-        })
-        .catch(err => {
-            //console.log(err.message);
-        });
+        if(Object.keys(obj).length > 0){
+            axios.patch(`http://localhost:3001/users/`+user._id, obj)
+            .then(user => {
+                dispatch({type: 'SET_USER', payload: user.data});
+                pass ? alert('Password changed!!!') : alert('Changes saved!!!');
+            })
+            .catch(err => {
+                //console.log(err.message);
+            });
+        }else alert('Nothing change!!!');
     }
 
-    const Check = e =>{
+    const SetItem = e =>{
         
         const { name, value } = e.target;
-        
+
+        if(name === 'login') {
+            setLogin(value);
+            setValidLogin(ValidString(value));
+        }
         if(name === 'name') {
             setName(value);
-            const valid = ValidString(value);
-            valid ? setNameClass(0) : setNameClass(-1);
-            setValidName(valid);
+            setValidName(ValidString(value));
         }
         if(name === 'email'){
             setEmail(value);
-            const valid = ValidMail(value);
-            valid ? setEmailClass(0) : setEmailClass(-1);
-            setValidEmail(valid);
+            setValidEmail(ValidMail(value));
         }
         if(name === 'phone'){
             setPhone(value);
-            const valid = ValidPhone(value);
-            valid ? setPhoneClass(0) : setPhoneClass(-1);
-            setValidPhone(valid);
+            setValidPhone(ValidPhone(value));
         }
         if(name === 'additionalPhone'){
             setAdditionalPhone(value);
-            const valid = ValidPhone(value);
-            valid ? setAdditionalPhoneClass(0) : setAdditionalPhoneClass(-1);
-            setValidAdditionalPhone(valid);
+            setValidAdditionalPhone(ValidPhone(value));
         }
     }
-    
+
+    const Delete = ()=>{
+        axios.delete('http://localhost:3001/users/'+user._id)
+            .then(result => {
+                dispatch({type: 'SET_SEARCH_RESULT', payload: result.data});
+                dispatch({type: 'REMOVE_USER'});
+                delete axios.defaults.headers.common["authorization"];
+                sessionStorage.removeItem('token');
+                history.push('/search');
+                alert('Account deleted!!!');
+            });
+    }
+
     return(
         <div className='user_profile'>
             <form onSubmit={Submit}>
                 <h3>Change your profile</h3>
+                <label>
+                    Login:
+                    <input
+                        className={(()=>{
+                            if(loginClass === 0) return "name";
+                            if(loginClass === -1) return "name invalid";
+                            if(loginClass === 1) return "name valid";
+                        })()}
+                        type="text"
+                        name="login"
+                        value={login}
+                        onChange={SetItem}
+                    />
+                </label>
                 <label>
                     Name:
                     <input
@@ -139,7 +188,7 @@ const UserProfile = ()=>{
                         type="text"
                         name="name"
                         value={name}
-                        onChange={Check}
+                        onChange={SetItem}
                     />
                 </label>
                 <label>
@@ -153,7 +202,7 @@ const UserProfile = ()=>{
                         type="text"
                         name="email"
                         value={email}
-                        onChange={Check}
+                        onChange={SetItem}
                     />
                 </label>
                 <label>
@@ -167,7 +216,7 @@ const UserProfile = ()=>{
                         type="text"
                         name="phone"
                         value={phone}
-                        onChange={Check}
+                        onChange={SetItem}
                     />
                 </label>
                 <label>
@@ -181,7 +230,7 @@ const UserProfile = ()=>{
                         type="text"
                         name="additionalPhone"
                         value={additionalPhone}
-                        onChange={Check}
+                        onChange={SetItem}
                     />
                 </label>
                 <button
@@ -220,43 +269,21 @@ const UserProfile = ()=>{
                         />
                     </label>
                 </> : ''}
-
-                <button
-                    type='submit'
-                    className='button'
-                    disabled={disabled}
-                >Edit</button>
+                <div className='profile_buttons'>
+                    <button
+                        type='button'
+                        className='button delete'
+                        disabled={disabled}
+                        onClick={Delete}
+                    >DELETE PROFILE</button>
+                    <button
+                        type='submit'
+                        className='button'
+                        disabled={disabled}
+                    >Edit</button>
+                </div>
             </form>
         </div>)
 }
 
 export default UserProfile;
-
-/*
-<label>
-                    Password:
-                    <input
-                        className={(()=>{
-                            if(passClass === 0) return "password";
-                            if(passClass === -1) return "password invalid";
-                            if(passClass === 1) return "password valid";
-                        })()}
-                        type="password"
-                        name="password"
-                        onChange={e => setPass(e.target.value)}
-                    />
-                </label>
-                <label>
-                    Confirm password:
-                    <input
-                        className={(()=>{
-                            if(confirmPassClass === 0) return "password";
-                            if(confirmPassClass === -1) return "password invalid";
-                            if(confirmPassClass === 1) return "password valid";
-                        })()}
-                        type="password"
-                        name="confirmPassword"
-                        onChange={e => setConfirmPass(e.target.value)}
-                    />
-                </label>
-*/

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from "react-redux";
 
 import { ValidMail, ValidPassword, ValidString } from '../helpers';
 
@@ -8,8 +7,6 @@ import '../style/add_admin.scss';
 const axios = require('axios').default;
 
 const AddAdminUser = ()=>{
-    
-    const dispatch = useDispatch();
 
     const [validLogin, setValidLogin] = useState(true);
     const [validEmail, setValidEmail] = useState(true);
@@ -35,7 +32,10 @@ const AddAdminUser = ()=>{
         )
             setDisabled(false);
         else setDisabled(true);
-    }, [validLogin, validEmail, validPass, validConfirmPass])
+    }, [
+        validLogin, validEmail, validPass, validConfirmPass,
+        login, email, pass, confirmPass
+    ])
 
     useEffect(()=>{
         const valid = ValidPassword(pass);

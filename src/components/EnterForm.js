@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from "react-redux";
-import { useHistory } from 'react-router-dom';
 
 import { ValidMail, ValidPassword, ValidString } from '../helpers';
 
@@ -11,7 +10,6 @@ const axios = require('axios').default;
 const EnterForm = () => {
     
     const dispatch = useDispatch();
-    const history = useHistory();
     
     const [validLogin, setValidLogin] = useState(true);
     const [validPass, setValidPass] = useState(true);
@@ -58,9 +56,9 @@ const EnterForm = () => {
         axios.post(`http://localhost:3001/users/auth`, user)
         .then(user => {
             sessionStorage.setItem('token', user.headers.authorization);
+            axios.defaults.headers.common['authorization'] = user.headers.authorization;
             dispatch({type: 'SET_USER', payload: user.data});
             dispatch({type: 'CLOSE_MODAL'});
-            history.push('/user');
         })
         .catch(err => {
             setError(true);

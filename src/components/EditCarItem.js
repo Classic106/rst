@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from 'react-router-dom';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
-import CarSlider from './CarSlider';
+import NewCarSlider from './NewCarSlider';
 
 import '../style/car_item.scss';
 import '../style/new_car_description.scss';
@@ -13,9 +12,7 @@ const axios = require('axios').default;
 const EditCarItem = ({ car })=>{
 
     const dispatch = useDispatch();
-
-    const owner = car.userId || {};
-
+    
     const [disabled, setDisabled] = useState(true);
     
     const [manufacturer, setManufacturer] = useState(car.manufacturer);
@@ -31,52 +28,41 @@ const EditCarItem = ({ car })=>{
     const [city, setCity] = useState(car.city);
     const [exchange, setExchange] = useState(car.exchange);
     const [description, setDescription] = useState(car.description);
-    
-    const { user } = useSelector(store => store.user);
-    //console.log(user)
+
     const Edit = ()=> setDisabled(!disabled);
 
     const Submit = e =>{
         e.preventDefault();
 
-        let obj = {
-            manufacturer, model,
-            mileage: +mileage,
-            price: +price, year: +year,
-            engine: +engine,
-            exchange, fuel, transmission,
-            condition, drive, city,
-            description,
-        };
+        let obj = {};
 
-        /*for(let i = 0; i < e.target.length; i++){
-            //console.log(e.target[i].type, e.target[i].name);
-            if(e.target[i].name){
-                if(e.target[i].type === 'text'){
-                    if(e.target[i].name === 'price' ||
-                        e.target[i].name === 'mileage' ||
-                            e.target[i].name === 'year' ||
-                                e.target[i].name === 'engine'
-                    ) obj[e.target[i].name] = +e.target[i].value;
-                    else obj[e.target[i].name] = e.target[i].value;
-                }
-                else if(e.target[i].type === 'checkbox')
-                    obj[e.target[i].name] = e.target[i].checked;
-                else obj[e.target[i].name] = e.target[i].value;
-            }
-        }*/
-        //console.log(e)
-        //console.log(obj);
+        if(manufacturer !== car.manufacturer) obj.manufacturer = manufacturer;
+        if(model !== car.model) obj.model = model;
+        if(+mileage !== +car.mileage) obj.mileage = mileage;
+        if(+price !== +car.price) obj.price = +price;
+        if(+year !== +car.year) obj.year = +year;
+        if(+engine !== +car.engine) obj.engine = +engine;
+        if(exchange !== car.exchange) obj.exchange = exchange;
+        if(fuel !== car.fuel) obj.fuel = fuel;
+        if(transmission !== car.transmission) obj.transmission = transmission;
+        if(condition !== car.condition) obj.condition = condition;
+        if(drive !== car.drive) obj.drive = drive;
+        if(city !== car.city) obj.city = city;
+        if(description !== car.description) obj.description = description;
 
-        axios.patch('http://localhost:3001/cars/'+car._id, obj)
-            .then(result => {
-                //console.log(result.data)
-                dispatch({type: 'SET_USER', payload: result.data})
-            })
-            .catch(err => {
-                //console.log(err.message);
-            });
+        if(Object.keys(obj).length > 0){
+            axios.patch('http://localhost:3001/cars/'+car._id, obj)
+                .then(result => {
+                    alert('Model changed!!!');
+                    //console.log(result.data)
+                    //dispatch({type: 'SET_USER', payload: result.data});
+                })
+                .catch(err => {
+                    //console.log(err.message);
+                });
+        }else alert('Nothing change!!!');
     }
+
     const Delete = () =>{
 
         axios.delete('http://localhost:3001/cars/'+car._id)
@@ -96,11 +82,12 @@ const EditCarItem = ({ car })=>{
                 }
             })
     }
+    
     return(
             <div className='car_item' key={car._id}>
             <div className='wrap_car_img'>
                 <div className='slidet_image_wrap' onClick={OpenImages}>
-                    <CarSlider images={car.images}/>
+                    <NewCarSlider car={car}/>
                 </div>
             </div>
             <form className='car_description' onSubmit={Submit}>
@@ -181,7 +168,7 @@ const EditCarItem = ({ car })=>{
                             <select
                                 name="fuel" value={fuel} 
                                 onChange={e => setFuel(e.target.value)}
-                                name='fuel' required type='text'
+                                required type='text'
                             >
                                 <option value="">----</option>
                                 <option value="Petrol">Petrol</option>
@@ -198,7 +185,7 @@ const EditCarItem = ({ car })=>{
                                 <select
                                     name="transmission" value={transmission}
                                     onChange={e => setTransmission(e.target.value)}
-                                    name='transmission' required
+                                    required
                                 >
                                     <option value="">----</option>
                                     <option value="Automat">Automat</option>
@@ -211,9 +198,8 @@ const EditCarItem = ({ car })=>{
                             {
                                 disabled ? <span>{condition}</span> :
                                 <select
-                                    name="condition" value={condition}
+                                    name="condition" value={condition} required
                                     onChange={e => setCondition(e.target.value)}
-                                    name='condition' required
                                 >
                                     <option value="">----</option>
                                     <option value="New">New</option>
@@ -231,9 +217,9 @@ const EditCarItem = ({ car })=>{
                             {
                                 disabled ? <span>{drive}</span> :
                                     <select
-                                        name="drive" value={drive}
+                                        name="drive" value={drive} required
                                         onChange={e => setDrive(e.target.value)}
-                                        name='drive' required
+                                        
                                     >
                                         <option value="">----</option>
                                         <option value="Front wheel">Front wheel</option>
@@ -262,9 +248,17 @@ const EditCarItem = ({ car })=>{
                     />
                 </label>
                 <div className='temp_car_buttons'>
-                    <button className='button' onClick={Edit}>Edit</button>
-                    <button className='button' type='submit'>Save</button>
-                    <button className='button delete' onClick={Delete}>DELETE</button>
+                    <button
+                        className={disabled ? 'button' : 'button active'}
+                        type='button' onClick={Edit}
+                    >Edit</button>
+                    <button
+                        className='button' type='submit'
+                    >Save</button>
+                    <button
+                        className='button delete'
+                        type='button' onClick={Delete}
+                    >DELETE</button>
                 </div>
             </form>
         </div>);

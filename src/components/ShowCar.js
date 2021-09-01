@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from "react-redux";
 
 import CarSlider from './CarSlider';
 
 import '../style/show_car.scss';
-
-const axios = require('axios').default;
 
 const Showcar = ({ id }) => {
     
@@ -14,7 +12,7 @@ const Showcar = ({ id }) => {
     const { searchResult } = useSelector(store => store.search);
     const car = searchResult.find(car => car._id === id);
     const owner = car.userId || {};
-
+    console.log(car)
     const OpenImages = ()=>{
         if(!!car.images && car.images.length > 0)
             dispatch({
@@ -30,6 +28,7 @@ const Showcar = ({ id }) => {
             <h3>{car.manufacturer.toUpperCase()} {car.model.toUpperCase()}</h3>
             <div className='show_car_item'>
                 <div className='wrap_car_img' onClick={OpenImages}>
+                
                 {   
                     (!car.images || car.images.length === 0) ?
                         <img src='https://i.rst.ua/no-photo.png' alt='carImage'/> :

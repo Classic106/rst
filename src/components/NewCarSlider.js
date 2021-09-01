@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from "react-redux";
 
 import Slider from "react-slick";
 
@@ -9,11 +9,13 @@ import '../style/new_slider.scss';
 
 const axios = require('axios').default;
 
-const SimpleSlider = ({ car })=>{
+const NewCarSlider = ({ car, exact })=>{
 
   const dispatch = useDispatch();
-  const [imgs, setImgs] = useState(car.images);
   
+  const [imgs, setImgs] = useState(car.images || []);
+  const [user, setUser] = useState(false);
+
   const settings = {
     infinite: true,
     slidesToShow: 1,
@@ -21,23 +23,47 @@ const SimpleSlider = ({ car })=>{
     arrows: true,
   };
 
+  useEffect(()=>{
+    return(()=>{
+
+      if(exact){
+
+      }else{
+        if(user) dispatch({type: 'SET_USER', payload: user});
+      }
+    })
+  }, [dispatch])
+
   const DeleteImage = e =>{
 
     e.stopPropagation();
 
     const index = e.target.attributes[1].value;
-
+    
     let images = [...car.images];
     const deletedImg = images.splice(+index, 1)[0];
     
-    axios.post('http://localhost:3001/cars/deletePicTemp/'+car._id, {images, deletedImg})
-      .then(result => {
-        imgs.splice(index, 1);
-        dispatch({type: 'SET_SEARCH_ITEMS', payload: result.data})
-      })
-      .catch(err => {
-        //console.log(err.message);
-      });
+    if(exact){
+      axios.post('http://localhost:3001/cars/deletePicTemp/'+car._id, {images, deletedImg})
+        .then(result => {
+          setImgs(imgs.splice(index, 1));
+          //dispatch({type: 'SET_SEARCH_RESULT', payload: result.data});
+          alert('Image deleted!!!');
+        })
+        .catch(err => {
+          //console.log(err.message);
+        });
+    }else{
+      axios.post('http://localhost:3001/cars/deletePic/'+car._id, {images, deletedImg})
+        .then(user => {
+          setImgs(imgs.splice(index, 1));
+          setUser(user.data);
+          alert('Image deleted!!!');
+        })
+        .catch(err => {
+          //console.log(err.message);
+        });
+    }
   }
 
   const FullSize = e =>{
@@ -106,4 +132,4 @@ const SimpleSlider = ({ car })=>{
   );
 }
 
-export default SimpleSlider;
+export default NewCarSlider;

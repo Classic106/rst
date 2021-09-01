@@ -1,0 +1,43 @@
+.user_item{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 48%;
+    padding: 20px 40px;
+    border-radius: 10px;
+    border: 1px solid white;
+    margin: 5px;
+
+    label{
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+
+        input{
+            margin: 5px;
+        }
+    }
+    label.user_date{
+        margin: 15px 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label.checkbox_admin{
+        width: 30%;
+        padding: 15px;
+    }
+    .user_item_buttons{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+.user_item.admin{
+    background: green;
+}
+.user_item.deleted{
+    background: red;
+}

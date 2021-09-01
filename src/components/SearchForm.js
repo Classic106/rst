@@ -1,26 +1,27 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom';
 
 import '../style/search_form.scss';
 
 const axios = require('axios').default;
 
 const SearchForm = ({ setLoader }) => {
-  
+
+  const dispatch = useDispatch();
+
   const [index, setIndex] = useState('-1');
   const [addSittings, setAddSittings] = useState(false);
 
   const { searchItems } = useSelector(store => store.search);
-
-  const history = useHistory();
-  const dispatch = useDispatch();
   
   const Reset = ()=>{
     const select = document.querySelectorAll('select');
     const input = document.querySelectorAll('input');
    
-    for(let key = 0; key < select.length; key++) select[key].value = '-1';
+    for(let key = 0; key < select.length; key++){
+      select[key].name === 'price' ?
+        select[key].value = '0-0' : select[key].value = '';
+    }
     for(let key = 0; key < input.length; key++) {
         if(input[key].type === 'checkbox') input[key].checked = false;
         if(input[key].type === 'text') input[key].value = '';
@@ -87,13 +88,11 @@ const SearchForm = ({ setLoader }) => {
         localStorage.setItem('userChoise', JSON.stringify(choise));
         dispatch({type: "SET_USER_CHOISE", payload: choise});
         dispatch({type: "SET_SEARCH_RESULT", payload: cars.data});
-        history.push('/result');
-        return;
       }
-      alert('Nothing found!!!');
+      else alert('Nothing found!!!');
     })
     .catch(err => {
-      console.log(err.message);
+      //console.log(err.message);
     });
     //setLoader(false);
   }

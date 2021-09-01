@@ -35,7 +35,10 @@ const RegistrationForm = ()=>{
         )
             setDisabled(false);
         else setDisabled(true);
-    }, [validLogin, validEmail, validPass, validConfirmPass])
+    }, [
+        validLogin, validEmail, validPass,
+        validConfirmPass, login, email, pass, confirmPass
+    ]);
 
     useEffect(()=>{
         const valid = ValidPassword(pass);
@@ -149,13 +152,14 @@ const RegistrationForm = ()=>{
         const user = { 
             login: login.value,
             email: email.value,
-            password: password.value
+            password: password.value,
         }
         
         axios.post(`http://localhost:3001/users/reg`, user)
         .then(user => {
 
             sessionStorage.setItem('token', user.headers.authorization);
+            axios.defaults.headers.common['authorization'] = user.headers.authorization;
             dispatch({type: 'SET_USER', payload: user.data});
             dispatch({type: 'CLOSE_MODAL'});
             history.push('/user');

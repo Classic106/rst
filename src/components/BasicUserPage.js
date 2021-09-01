@@ -1,63 +1,99 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { Switch, Route } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 import SearchResult from './SearchResult';
 import UserCars from './UserCars';
 import AddCarForm from './AddCarForm';
+import ShowCar from './ShowCar';
 import CarItem from './CarItem';
 import UserProfile from './UserProfile';
+import PageNotFound from './PageNotFound';
 
 import '../style/user.scss';
 
 const BasicUserPage = ()=>{
 
-  const { user } = useSelector(store => store.user);
-  const [choise, setChoise] = useState('');
+  const history = useHistory();
+  
+  const locationState = history.location.state;
 
-  const changeChoise = e =>{
-    const { textContent } = e.target;
-    setChoise(textContent);
+  const { searchResult } = useSelector(store => store.search);
+  
+  const [buttonIndex, setButtonIndex] = useState(0);
+  const [activeMyCars, setActiveMyCars] = useState(false);
+  const [activeSearch, setActiveSearch] = useState(false);
+  const [activeAddCar, setActiveAddCar] = useState(false);
+  const [activeEdit, setActiveEdit] = useState(false);
+  const [activeMessage, setActiveMessage] = useState(false);
+  
+  useEffect(()=>{
+    setButtonIndex(+locationState || 1);
+  }, [locationState]);
+  console.log(locationState, buttonIndex)
+  useEffect(()=>{
+    buttonIndex === 0 ? setActiveSearch(true) : setActiveSearch(false);
+    buttonIndex === 1 ? setActiveMyCars(true) : setActiveMyCars(false);
+    buttonIndex === 2 ? setActiveAddCar(true) : setActiveAddCar(false);
+    buttonIndex === 3 ? setActiveEdit(true) : setActiveEdit(false);
+    buttonIndex === 4 ? setActiveMessage(true) : setActiveMessage(false);
+  }, [buttonIndex]);
+  
+  const Click = e =>{
+    const index = +e.target.attributes[1].value;
+    setButtonIndex(index);
+    return index;
   }
 
-  if(!user) return <Redirect to='/'/>;
-  
   return (
     <div className='user'>
       <div className='user_header'>
-        <button onClick={changeChoise} className='button'>Search</button>
-        <button onClick={changeChoise} className='button'>My cars</button>
-        <button onClick={changeChoise} className='button'>Add car</button>
-        <button onClick={changeChoise} className='button'>Edit profile</button>
-        <button onClick={changeChoise} className='button'>Message to admin</button>
+        <button
+          onClick={e => history.push("/user/search", Click(e))}
+          className={activeSearch ? 'button active' : 'button'}
+          index='0'
+            >Search</button>
+        <button
+          onClick={e => history.push("/user/cars", Click(e))}
+          className={activeMyCars ? 'button active' : 'button'}
+          index='1'
+            >My cars</button>
+        <button
+          onClick={e => history.push("/user/addcar", Click(e))}
+          className={activeAddCar ? 'button active' : 'button'}
+          index='2'
+            >Add car</button>
+        <button
+          onClick={e => history.push("/user/profile", Click(e))}
+          className={activeEdit ? 'button active' : 'button'}
+          index='3'
+            >Edit profile</button>
+        <button 
+          onClick={e => Click(e)}
+          className={activeMessage ? 'button active' : 'button'}
+          index='4'
+            >Message to admin</button>
       </div>
       <hr/>
       <div className='user_main'>
-        {
-          (()=>{
-            switch(choise){
-
-              case 'Search':
-                return <SearchResult CarItem={CarItem} exact/>;
-                break;
-              
-              case 'My cars':
-                  return <UserCars />;
-                  break;
-
-              case 'Add car':
-                return <AddCarForm />;
-                break;
-
-              case 'Edit profile':
-                return <UserProfile />;
-                break;
-              
-              default: 
-                return <SearchResult CarItem={CarItem} exact/>;
-            }
-          })()
-        }
+       <Switch>
+          <Route path='/user/search'
+            component={()=>
+              <SearchResult 
+                CarItem={CarItem}
+                searchResult={searchResult}
+                exact
+              />}
+          />
+          <Route path='/user/cars' component={UserCars}/>
+          <Route path='/user/addcar' component={AddCarForm}/>
+          <Route path='/user/profile' component={UserProfile}/>
+          <Route path='/user/:carId'
+            component={({match})=><ShowCar id={match.params.carId}/>}
+          />
+          <Route path='/:notFound' component={PageNotFound}/>
+        </Switch>
       </div>
     </div>
   );

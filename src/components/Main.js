@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import '../style/main.scss';
-//import ImageSlider from './ImageSlider';
-import User from './User';
-import SearchForm from './SearchForm';
-import SearchResult from './SearchResult';
-import CarItem from './CarItem';
-import ShowCar from './ShowCar';
-import ShowNewCar from './ShowNewCar';
+
+import BasicUserPage from './BasicUserPage';
+import AdminUserPage from './AdminUserPage';
+import Search from './Search';
 import Loader from './Loader';
+import PageNotFound from './PageNotFound';
 
 const axios = require('axios').default;
 
-const Main = ({loader, setLoader}) => {
-
-  const { user } = useSelector(store => store.user);
-  const { searchResult } = useSelector(store => store.search);
-  const { userChoise } = useSelector(store => store.search);
-
+const Main = ({ loader, setLoader }) => {
+  
+  const history = useHistory();
   const dispatch = useDispatch();
 
+  const { user } = useSelector(store => store.user);
+  
   useEffect(()=>{
     const Func = async ()=>{
-
+     
       const userChoise = await localStorage.getItem('userChoise');
       
       if(userChoise){
@@ -71,7 +69,6 @@ const Main = ({loader, setLoader}) => {
             dispatch({type: "SET_SEARCH_RESULT", payload: cars.data});
             return;
           }
-          alert('Nothing found!!!');
         })
         .catch(err => {
           console.log(err.message);
@@ -83,41 +80,31 @@ const Main = ({loader, setLoader}) => {
         dispatch({type: 'SET_SEARCH_ITEMS', payload: val.data})
       })
       .catch(err => {
-        console.log(err.message);
-        alert('Something wrong. Repeat request');
+          alert('Something wrong. Reload page!!!');
         //return err
       });
     }
     Func();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(()=>{
+  
+    if(user) user.isAdmin ?
+      history.replace('/admin/newcars') : history.replace('/user/cars'); 
+    else history.replace('/search');
+       
+  }, [history, user]);
 
   if(loader) return(<div className="main_container"><Loader /></div>);
-
+  
   return (
     <div className="main_container">
        <Switch>
-          <Route exact path='/'
-            render={
-              ({history})=>{
-                user ? history.push('/user') : 
-                  (searchResult.length === 0) ?
-                    history.push('/search') : history.push('/result')
-              }
-            }
-          />
-          <Route exact path='/user' component={User}/>
-          <Route exact path='/search'
-            component={()=><SearchForm />}
-          />
-          <Route exact path='/result'
-            component={()=><SearchResult CarItem={CarItem} exact/>}
-          />
-          <Route path='/result/:id'
-            component={({match})=><ShowCar id={match.params.id}/>}
-          />
-          <Route path='/tempresult/:id'
-            component={({match})=><ShowNewCar id={match.params.id}/>}
-          />
+          <Route exact path='/' component={First}/>
+          <Route path='/search' component={Search}/>
+          <Route path='/user/:link' component={BasicUserPage}/>
+          <Route path='/admin/:link' component={AdminUserPage}/>
+          <Route path='/:notFound' component={PageNotFound}/>
         </Switch>
     </div>
   );
@@ -125,29 +112,29 @@ const Main = ({loader, setLoader}) => {
 
 export default Main;
 
-/*
-user ?
-                <Redirect to='user'/> : 
-                  (searchResult.length === 0) ? 
-                    <Redirect to='search'/> :
-                      <Redirect to='result'/>*/
+const First = ()=>{
 
-/*  {
-        (user) ?
-          <Redirect to='user'/> : 
-            (searchResult.length === 0) ? 
-              <Redirect to='search'/> :
-                <Redirect to='result'/>
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const [loader, setLoader] = useState(true);
+
+  useEffect(()=>{
+    const Func = async()=>{
+       await axios.get('http://localhost:3001/searchItems')
+        .then(val => {
+          dispatch({type: 'SET_SEARCH_ITEMS', payload: val.data})
+        })
+        .catch(err => {
+          alert('Something wrong. Reload page!!!');
+          //return err
+        });
+      setLoader(false);
     }
-*/
-/*
- return (
-    <div className="main_container">
-      {!user ?
-        <>
-          <Search />
-          <ImageSlider />
-        </> : <User/>
-      }
-    </>
-*/
+    Func();
+  });
+
+  if(loader) return(<div className="main_container"><Loader /></div>);
+
+  return(<Redirect to='/search'/>);
+}

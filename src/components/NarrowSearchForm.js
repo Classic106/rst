@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import StickyBox from "react-sticky-box";
 
 const axios = require('axios').default;
 
@@ -13,7 +12,6 @@ const NarrowSearchForm = ()=>{
 
   const [index, setIndex] = useState('-1');
   const [addSittings, setAddSittings] = useState(false);
-  //const [top, setTop] = useState(0);
   
   const changeCouise = e => {
     const {name, value} = e.target;
@@ -36,19 +34,19 @@ const NarrowSearchForm = ()=>{
     let index = '-1';
     
     if(userChoise.manufacturer !== '-1') {
-      index = searchItems.findIndex(val=>val.manufacturer === userChoise.manufacturer)
+      index = searchItems.findIndex(val=> val.manufacturer === userChoise.manufacturer)
       setIndex(''+index);
     }
-
-    //return(()=>dispatch({type: "REMOVE_USER_CHOISE"}))
-
   }, [userChoise, searchItems]);
 
   const Reset = ()=>{
     const select = document.querySelectorAll('select');
     const input = document.querySelectorAll('input');
    
-    for(let key = 0; key < select.length; key++) select[key].value = '';
+    for(let key = 0; key < select.length; key++){
+      select[key].name === 'price' ?
+        select[key].value = '0-0' : select[key].value = '';
+    }
     for(let key = 0; key < input.length; key++) {
         if(input[key].type === 'checkbox') input[key].checked = false;
         if(input[key].type === 'text') input[key].value = '';
@@ -99,7 +97,6 @@ const NarrowSearchForm = ()=>{
    
     axios.post('http://localhost:3001/cars', obj)
     .then(cars => {
-      //console.log(cars)
       if(cars.data.length !== 0){
         localStorage.setItem('userChoise', JSON.stringify(choise));
         dispatch({type: "SET_USER_CHOISE", payload: choise});
@@ -109,12 +106,11 @@ const NarrowSearchForm = ()=>{
       alert('Nothing found!!!');
     })
     .catch(err => {
-      console.log(err.message);
+      //console.log(err.message);
     });
   }
 
   return (
-       // <StickyBox>
     <div className='narrow_container'>
     <form
       className="search_form narrow_form"
@@ -168,7 +164,7 @@ const NarrowSearchForm = ()=>{
       <label>
         Price
         <select tabIndex="6" name="price" value={userChoise.price} onChange={changeCouise}>
-          <option value="">----</option>
+          <option value="0-0">----</option>
           <option value="0-300">$0 - $300</option>
           <option value="300-500">$300 - $500</option>
           <option value="500-1000">$500 - $1'000</option>
@@ -272,7 +268,6 @@ const NarrowSearchForm = ()=>{
 
     </form>
     </div>
-   // </StickyBox>
   );
 };
 

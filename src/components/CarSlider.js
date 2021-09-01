@@ -1,5 +1,5 @@
-import React, {  Component } from 'react';
-import { useSelector, useDispatch } from "react-redux";
+import React from 'react';
+
 import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
@@ -39,8 +39,8 @@ const SimpleSlider = ({ images, exact })=> {
       pauseOnDotsHover: true,
       fade: true,
       initialSlide: 0,
-      cssEase: 'linear'
-      //adaptiveHeight: true,
+      cssEase: 'linear',
+      adaptiveHeight: true,
     } : {
       infinite: true,
       slidesToShow: 1,

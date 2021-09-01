@@ -1,17 +1,21 @@
-import Logo from '../images/rst-ua-logo.svg';
-
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+
+import Logo from '../images/rst-ua-logo.svg';
 
 import '../style/header_container.scss';
 
 const Header = ()=>{
 
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const { user } = useSelector(store => store.user);
  
   const Exit = ()=>{
     sessionStorage.removeItem('token');
     dispatch({type: 'REMOVE_USER'});
+    history.replace('/');
   };
   
   const Modal = val => dispatch({type: "OPEN_MODAL", payload: val});

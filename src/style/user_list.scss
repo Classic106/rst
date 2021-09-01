@@ -1,0 +1,25 @@
+.user_list{
+    display: flex;
+    flex-direction:column;
+    width: 100%;
+    padding: 10px 0;
+
+    .sort_items{
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        padding: 10px 60px;
+        
+        label{
+            span{
+                margin-left: 15%;
+            }
+        }
+    }
+    .user_items{
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px;
+        justify-content: center;
+    }
+}

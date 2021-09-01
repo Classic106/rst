@@ -2,12 +2,12 @@ const express = require('express');
 
 const {
     getAll,
+    getById,
     postCheck,
     postRegistration,
     postRegistrationAdmin,
     getAuth,
     postAuth,
-    //getById,
     deleteUser,
     patchUser,
 } = require('./controller');
@@ -20,7 +20,7 @@ usersRouter.post('/reg', postRegistration);
 usersRouter.post('/regAdmin', postRegistrationAdmin);
 usersRouter.get('/auth', getAuth);
 usersRouter.post('/auth', postAuth);
-//usersRouter.get('/:id', getById);
+usersRouter.get('/:id', getById);
 usersRouter.delete('/:id', deleteUser);
 usersRouter.patch('/:id', patchUser);
 

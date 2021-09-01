@@ -1,0 +1,15 @@
+.not_found{
+    position: relative;
+    
+    button{
+        position: absolute;
+        bottom: 21%;
+        right: 26%;
+        padding: 4%;
+        border: none;
+        border-radius: 39px;
+        background: none;
+        width: 18%;
+        z-index: 1;
+    }
+}

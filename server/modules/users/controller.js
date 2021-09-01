@@ -1,6 +1,17 @@
-const { Models } = require('./models');
+const {
+    checkUser,
+    getAll,
+    postRegistration,
+    postRegistrationAdmin,
+    getAuth,
+    postAuth,
+    deleteItem,
+    patchItem,
+    getById,
+} = require('./models');
 
 class Controller{
+
     async postCheck(req, res){
         const { body } = req;
         
@@ -10,13 +21,32 @@ class Controller{
         }
         
         try{
-            const check = await Models.checkUser(body);
+            const check = await checkUser(body);
             if(check instanceof Error) throw check;
             res.json(check);
         }catch(err){
             res.status(401).json({message: err.message});
         }
     }
+
+    async getById(req, res){
+        const { id } = req.params;
+
+        if (!id) {
+        res.status(404).json({ message: "User not found" });
+        return;
+        }
+
+        try {
+        const result = await getById(id);
+        
+        if (result instanceof Error) throw result;
+        res.json(result);
+        } catch (err) {
+        res.status(404).json({ message: err.message });
+        }
+    }
+
     async getAll(req, res){
         const { authorization } = req.headers;
 
@@ -26,30 +56,13 @@ class Controller{
         }
         
         try{
-            const users = await Models.getAll(authorization);
+            const users = await getAll(authorization);
             if(users instanceof Error) throw users;
             res.json(users);
         }catch(err){
             res.status(401).json({message: err.message});
         }
     }
-    /*async getById(req, res){
-        /*const { authorization } = req.headers;
-
-        if(!authorization){
-            res.status(401).json({message: 'Authorization failed'});
-            return;
-        }
-
-        try{
-            const { id } = req.params;
-            const user = await Models.getById(id/*, authorization);
-            if(user instanceof Error) throw user;
-            res.json(user);
-        }catch(err){
-            res.status(404).json({message: err.message});
-        }
-    }*/
 
     async postRegistration(req, res){
         try{
@@ -61,8 +74,12 @@ class Controller{
             
             body.isDeleted = false;
             body.isAdmin = false;
+            body.name = '';
+            body.phone = '';
+            body.additionalPhone = '';
             
-            const user = await Models.postRegistration(body);
+            const user = await postRegistration(body);
+            
             if(user instanceof Error) throw user;
             res.header('Authorization', user.token);
             res.json(user.user);
@@ -70,6 +87,7 @@ class Controller{
             res.status(401).json({message: err.message});
         }
     }
+
     async postRegistrationAdmin(req, res){
         try{
             const { body } = req;
@@ -88,13 +106,14 @@ class Controller{
             body.isDeleted = false;
             body.isAdmin = true;
             
-            const result = await Models.postRegistrationAdmin(body, authorization);
+            const result = await postRegistrationAdmin(body, authorization);
             if(result instanceof Error) throw result;
             res.json(result);
         }catch(err){
             res.status(401).json({message: err.message});
         }
     }
+
     async getAuth(req, res){
 
         const { authorization } = req.headers;
@@ -105,7 +124,7 @@ class Controller{
         }
 
         try{
-            const user = await Models.getAuth(authorization);
+            const user = await getAuth(authorization);
             if(user instanceof Error) throw user;
             res.json(user);
         }catch(err){
@@ -122,7 +141,8 @@ class Controller{
             return;
         }
         try{
-            const user = await Models.postAuth(body);
+            const user = await postAuth(body);
+            
             if(user instanceof Error) throw user;
             res.header('Authorization', user.token);
             res.json(user.user);
@@ -131,6 +151,7 @@ class Controller{
             res.status(404).json({message: err.message});
         }
     }
+
     async deleteUser(req, res){
                 
         const { authorization } = req.headers;
@@ -142,13 +163,16 @@ class Controller{
 
         try{
             const { id } = req.params;
-            const user = await Models.delete(id, authorization);
+            const user = await deleteItem(id, authorization);
+
             if(user instanceof Error) throw user;
+            
             res.json({message: 'User with ID '+user._id+' deleted'});
         }catch(err){
             res.status(404).json({message: err.message});
         }
     }
+
     async patchUser(req, res){
                 
         const { authorization } = req.headers;
@@ -161,9 +185,9 @@ class Controller{
         try{
             const { id } = req.params;
             const { body } = req;
-            const user = await Models.patch(body, id, authorization);
+            const user = await patchItem(body, id, authorization);
             if(user instanceof Error) throw user;
-            res.json(user);    
+            res.json(user);
         }catch(err){
             res.status(404).json({message: err.message});
         }

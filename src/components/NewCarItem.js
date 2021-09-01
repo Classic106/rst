@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from 'react-router-dom';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import NewCarSlider from './NewCarSlider';
 
@@ -11,11 +10,11 @@ import '../style/new_slider.scss';
 const axios = require('axios').default;
 
 const NewCarItem = ({ car })=>{
-
+    
     const dispatch = useDispatch();
 
     const owner = car.userId || {};
-
+    
     const [disabled, setDisabled] = useState(true);
     
     const [manufacturer, setManufacturer] = useState(car.manufacturer);
@@ -32,7 +31,6 @@ const NewCarItem = ({ car })=>{
     const [exchange, setExchange] = useState(car.exchange);
     const [description, setDescription] = useState(car.description);
     
-
     const Edit = ()=> setDisabled(!disabled);
 
     const Submit = e =>{
@@ -47,27 +45,10 @@ const NewCarItem = ({ car })=>{
             condition, drive, city,
             description,
         };
-        
-        /*for(let i = 0; i < e.target.length; i++){
-            //console.log(e.target[i].type, e.target[i].name);
-            if(e.target[i].name){
-                if(e.target[i].type === 'text'){
-                    if(e.target[i].name === 'price' ||
-                        e.target[i].name === 'mileage' ||
-                            e.target[i].name === 'year' ||
-                                e.target[i].name === 'engine'
-                    ) obj[e.target[i].name] = +e.target[i].value;
-                    else obj[e.target[i].name] = e.target[i].value;
-                }
-                else if(e.target[i].type === 'checkbox')
-                    obj[e.target[i].name] = e.target[i].checked;
-                else obj[e.target[i].name] = e.target[i].value;
-            }
-        }*/
 
-        axios.post('http://localhost:3001/cars/publicTempItem/'+car._id,)
+        axios.post('http://localhost:3001/cars/publicTempItem/'+car._id, obj)
             .then(result => {
-                //console.log(result.data)
+                //console.log(result.data);
                 dispatch({type: 'SET_SEARCH_RESULT', payload: result.data})
             })
             .catch(err => {
@@ -77,7 +58,7 @@ const NewCarItem = ({ car })=>{
     const Delete = () =>{
         axios.delete('http://localhost:3001/cars/deleteTempItem/'+car._id,)
             .then(result => {
-                //console.log(result.data)
+                console.log(result.data, 'delete')
                 dispatch({type: 'SET_SEARCH_RESULT', payload: result.data})
             })
             .catch(err => {
@@ -89,7 +70,7 @@ const NewCarItem = ({ car })=>{
             <div className='car_item' key={car._id}>
             <div className='wrap_car_img'>
                 <div className='slidet_image_wrap'>
-                    <NewCarSlider car={car}/>
+                    <NewCarSlider car={car} exact/>
                 </div>
             </div>
             <form className='car_description' onSubmit={Submit}>
@@ -168,9 +149,8 @@ const NewCarItem = ({ car })=>{
                             {
                                 disabled ? <span>{fuel}</span>: 
                             <select
-                                name="fuel" value={fuel} 
+                                name="fuel" value={fuel} required
                                 onChange={e => setFuel(e.target.value)}
-                                name='fuel' required
                             >
                                 <option value="">----</option>
                                 <option value="Petrol">Petrol</option>
@@ -187,7 +167,7 @@ const NewCarItem = ({ car })=>{
                                 <select
                                     name="transmission" value={transmission}
                                     onChange={e => setTransmission(e.target.value)}
-                                    name='transmission' required
+                                    required
                                 >
                                     <option value="">----</option>
                                     <option value="Automat">Automat</option>
@@ -200,9 +180,8 @@ const NewCarItem = ({ car })=>{
                             {
                                 disabled ? <span>{condition}</span> :
                                 <select
-                                    name="condition" value={condition}
+                                    name="condition" value={condition} required
                                     onChange={e => setCondition(e.target.value)}
-                                    name='condition' required
                                 >
                                     <option value="">----</option>
                                     <option value="New">New</option>
@@ -220,9 +199,8 @@ const NewCarItem = ({ car })=>{
                             {
                                 disabled ? <span>{drive}</span> :
                                     <select
-                                        name="drive" value={drive}
+                                        name="drive" value={drive} required
                                         onChange={e => setDrive(e.target.value)}
-                                        name='drive' required
                                     >
                                         <option value="">----</option>
                                         <option value="Front wheel">Front wheel</option>
@@ -268,18 +246,15 @@ const NewCarItem = ({ car })=>{
                 </div>
                 <div className='temp_car_buttons'>
                     <button
-                        className='button'
-                        onClick={Edit}
-                        type='button'
+                        className={disabled ? 'button' : 'button active'}
+                        onClick={Edit} type='button'
                     >Edit</button>
                     <button
-                        className='button'
-                        type='submit'
+                        className='button' type='submit'
                     >Publish</button>
                     <button
                         className='button delete'
-                        onClick={Delete}
-                        type='button'
+                        onClick={Delete} type='button'
                     >DELETE</button>
                 </div>
             </form>

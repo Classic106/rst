@@ -1,6 +1,4 @@
-const { User } = require('../users/models');
 const mongoose = require("mongoose");
-const jwt = require('jsonwebtoken');
 
 const secret = process.env.SECRET;
 const Schema = mongoose.Schema;
@@ -13,7 +11,8 @@ const searchCarScheme = new Schema({
 const searchCar = mongoose.model("SearchCar", searchCarScheme);
 
 class Models{
-    get(){
+
+    getSearchList(){
         return searchCar.find({})
             .then(cars => cars)
             .catch(err =>{
@@ -21,65 +20,42 @@ class Models{
                 return err;
             });
     }
-    async post(body, token){
-        const { id } = jwt.verify(token, secret);
-        
-        const user = await User.find({_id: id})
-        .then(user => (user.length === 1) ? user[0] : false)
+
+    postSearchList(body){
+
+        return searchCar.findOne({ manufacturer: body.manufacturer })
+        .then(async result =>{
+            
+            if(result){
+                
+                if(result.models.length){
+                    
+                    let models = [...result.models];
+
+                    if(!models.includes(body.model)){
+                        models.push(body.model);
+                    
+                        return searchCar.findOneAndUpdate(
+                            {manufacturer: body.manufacturer},
+                            {models: models}
+                        );
+                    }
+                }
+                return 'ok';
+            }else{
+
+                const newSearchCarItem = new searchCar({
+                    manufacturer: body.manufacturer,
+                    models: [body.model],
+                });
+                await newSearchCarItem.save();
+                return 'ok';
+            }
+        })
         .catch(err =>{
             //console.log(err);
             return err;
         });
-        
-        if(!user.isAdmin) return new Error("User not found");
-
-        const car = new searchCar(body);
-
-        return car.save()
-            .then(car => car)
-            .catch(err =>{
-                //console.log(err);
-                return err;
-            });
-    }
-    async delete(idCar, token){
-        const { id } = jwt.verify(token, secret);
-        
-        const user = await User.find({_id: id})
-        .then(user => (user.length === 1) ? user[0] : false)
-        .catch(err =>{
-            //console.log(err);
-            return err;
-        });
-        
-        if(!user.isAdmin) return new Error("User not found");
-
-        return Car.findByIdAndDelete(idCar)
-            .then(car => car)
-            .catch(err =>{
-                //console.log(err);
-                return err;
-            });
-    }
-    async patch(body, idCar, token){
-        
-        const { id } = jwt.verify(token, secret);
-        
-        const user = await User.find({_id: id})
-        .then(user => (user.length === 1) ? user[0] : false)
-        .catch(err =>{
-            //console.log(err);
-            return err;
-        });
-        
-        if(!user.isAdmin) return new Error("User not found");
-        
-        return Car.findOneAndUpdate({_id: idCar}, body, {new: true})
-            .then(car => car)
-            .catch(err =>{
-                //console.log(err);
-                return err;
-            });
     }
 }
 

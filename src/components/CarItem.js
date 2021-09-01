@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
 
 const CarItem = ({ car }) => {
     
     const history = useHistory();
-    const dispatch = useDispatch();
 
-    const Click = ()=> history.push('/result/'+car._id);
+    const Click = ()=> history.push('/user/'+car._id);
     
     return(
         <div className='car_item' key={car._id} onClick={Click}>

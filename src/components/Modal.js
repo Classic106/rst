@@ -23,10 +23,10 @@ const Modal = () => {
                     
                     case 'enter':
                         return <EnterForm />;
-                        break;
+
                     case 'register':
                         return <RegistrationForm />;
-                        break;
+
                     default: 
                         return '';
                 }
