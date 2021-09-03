@@ -1,14 +1,16 @@
-require('dotenv').config();
+//require('dotenv').config();
 
-const fileUpload = require('express-fileupload');
+//const fileUpload = require('express-fileupload');
 const mongoose = require("mongoose");
-const express = require('express');
+/*const express = require('express');
 const path = require('path');
 const cors = require('cors');
 
 const Cars = require('./modules/cars/routes');
 const Users = require('./modules/users/routes');
-const SearchItems = require('./modules/searchCars/routes');
+const SearchItems = require('./modules/searchCars/routes');*/
+
+const app = require('./app');
 
 mongoose.connect(process.env.DB,
     {
@@ -17,13 +19,16 @@ mongoose.connect(process.env.DB,
         useFindAndModify: false
     }, 
     function(err){
-        if(err) return console.log(err);
-        app.listen(process.env.PORT, ()=>{
+        if(err) console.log(err);
+        /*app.listen(process.env.PORT, ()=>{
         console.log('Server opened on port '+process.env.PORT);
-    });
+    });*/
 });
 
-const app = express();
+ app.listen(process.env.PORT, ()=>{
+        console.log('Server opened on port '+process.env.PORT);
+    });
+/*const app = express();
 
 app.use(fileUpload());
 app.use(express.json());
@@ -45,3 +50,5 @@ app.use('/', express.static(path.resolve(__dirname, 'public')),
 app.use('/cars', Cars);
 app.use('/users', Users);
 app.use('/searchItems', SearchItems);
+
+module.exports = app;*/

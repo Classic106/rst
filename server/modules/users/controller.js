@@ -156,11 +156,12 @@ class Controller{
                 
         const { authorization } = req.headers;
         
+        console.log(authorization);
+        
         if(!authorization){
             res.status(401).json({message: 'Authorization failed'});
             return;
         }
-
         try{
             const { id } = req.params;
             const user = await deleteItem(id, authorization);

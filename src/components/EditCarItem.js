@@ -55,7 +55,7 @@ const EditCarItem = ({ car })=>{
                 .then(result => {
                     alert('Model changed!!!');
                     //console.log(result.data)
-                    //dispatch({type: 'SET_USER', payload: result.data});
+                    dispatch({type: 'SET_USER', payload: result.data});
                 })
                 .catch(err => {
                     //console.log(err.message);
@@ -67,6 +67,7 @@ const EditCarItem = ({ car })=>{
 
         axios.delete('http://localhost:3001/cars/'+car._id)
             .then(result => {
+                alert('Model deleted!!!');
                 dispatch({type: 'SET_USER', payload: result.data});
             })
             .catch(err => {

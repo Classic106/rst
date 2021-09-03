@@ -3,6 +3,7 @@ const { getSearchList } = require('./models');
 class Controller{
     
     async getSearchList(req, res){
+        
         try{
             const searchCars = await getSearchList();
             if(searchCars instanceof Error) throw searchCars;

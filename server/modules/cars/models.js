@@ -12,7 +12,7 @@ const secret = process.env.SECRET;
 
 const tempImagePath = __dirname.replace(
                     /\/server\/.+/,
-                    '/server/public/carsImages/'
+                    '/server/public/tempCarsImages/'
                 );
 
 const imagePath = __dirname.replace(
@@ -34,14 +34,14 @@ class Models{
         return Car.find(newBody)
             .populate('userId')
             .where('price')
-            .gte(+body.price[0])
-            .lte(+body.price[1])
+            .gte(+body.price[0] || 0)
+            .lte(+body.price[1] || Number.MAX_VALUE)
             .where('engine')
-            .gte(+body.engine[0])
-            .lte(+body.engine[1])
+            .gte(+body.engine[0] || 0)
+            .lte(+body.engine[1] || Number.MAX_VALUE)
             .where('year')
-            .gte(+body.year[0])
-            .lte(+body.year[1])
+            .gte(+body.year[0] || 0)
+            .lte(+body.year[1] || Number.MAX_VALUE)
             .then(cars => {
                 return body.withPhoto ? 
                     cars.filter(car => car.images.length > 0) : cars
@@ -139,7 +139,7 @@ class Models{
 
         return TmpCar.findOne({_id: idItem})
             .then(car =>{
-                //console.log(car)
+                
                 for(let key in car.images){
                     unlink(tempImagePath+car.images[key].match(/\w+\.(jpg|jpeg|png)$/)[0]);
                 }
@@ -167,7 +167,7 @@ class Models{
     }
 
     deleteItem(idCar){
-
+        
         return Car.findOne({_id: idCar})
         .then(car =>{
             for(let key in car.images){
@@ -179,15 +179,17 @@ class Models{
             return User.findOne({carsId: {$in: [idCar]}})
             .then(user => {
                 const newcarsId = user.carsId.filter(val => val != idCar);
-                return User.findOneAndUpdate({_id: id}, {carsId: newcarsId}, {new: true});
+                return User.findOneAndUpdate(
+                    {_id: user._id},
+                    {carsId: newcarsId},
+                    {new: true}
+                ).populate('carsId');
             });
         })
     }
 
     patchItem(body, idCar){
-
-        return Car.findOneAndUpdate({_id: idCar}, body, {new: true})
-        //.then(() => Car.find({}));
+        return Car.findOneAndUpdate({_id: idCar}, body, {new: true}).populate('userId');
     }
 }
 

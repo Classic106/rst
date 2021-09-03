@@ -15,7 +15,8 @@ const Header = ()=>{
   const Exit = ()=>{
     sessionStorage.removeItem('token');
     dispatch({type: 'REMOVE_USER'});
-    history.replace('/');
+    if(user.isAdmin) dispatch({type: 'REMOVE_SEARCH_RESULT'});
+    history.push('/');
   };
   
   const Modal = val => dispatch({type: "OPEN_MODAL", payload: val});

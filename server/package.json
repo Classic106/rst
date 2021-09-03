@@ -1,12 +1,16 @@
-{
+{ 
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true
+  },
   "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "env-cmd -f ./conf/test.env jest",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "env-cmd -f ./conf/dev.env nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -23,5 +27,11 @@
     "mongoose": "^5.13.5",
     "mongoose-hidden": "^1.9.1",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "env-cmd": "^10.1.0",
+    "jest": "^27.1.0",
+    "supertest": "^6.1.6"
   }
 }

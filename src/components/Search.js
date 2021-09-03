@@ -11,9 +11,9 @@ const Search = () => {
     const { searchResult } = useSelector(store => store.search);
     const { searchItems } = useSelector(store => store.search);
 
-    const [result, setResult] = useState(searchResult);
+    const [result, setResult] = useState(searchResult || []);
     const [loader, setLoader] = useState(true);
-
+    console.log(result);
     useEffect(()=>{
         setResult(searchResult);
         setLoader(false);
@@ -24,7 +24,7 @@ const Search = () => {
     return result.length > 0 ?
         <SearchResult
             CarItem={CarItem}
-            searchResult={searchResult}
+            searchResult={result}
             exact
         /> : <SearchForm/>;
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
+import { useSelector, useDispatch } from "react-redux";
 import { Switch, Route } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 
@@ -14,6 +15,7 @@ import '../style/user.scss';
 const AdminUserPage = ()=>{
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const locationState = history.location.state;
 
@@ -26,7 +28,7 @@ const AdminUserPage = ()=>{
   const [activeMessage, setActiveMessage] = useState(false);
   
   useEffect(()=>{
-    setButtonIndex(locationState || 0);
+    setButtonIndex(locationState === undefined ? 0 : locationState);
   }, [locationState]);
   
   useEffect(()=>{
@@ -73,15 +75,23 @@ const AdminUserPage = ()=>{
       </div>
       <hr/>
       <div className='user_main'>
-        <Switch>
-          <Route exact path='/admin/newcars'component={NewCarsList} />
-          <Route exact path='/admin/users' component={UsersList}/>
-          <Route exact path='/admin/add' component={AddAdminUser}/>
-          <Route path='/admin/user/cars/:userId'
-            component={({match})=><UserCars id={match.params.userId}/>}
-          />
-          <Route path='/:notFound' component={PageNotFound}/>
-        </Switch>
+        <SwitchTransition>
+            <CSSTransition
+              timeout={250}
+              classNames='fade'
+              key={history.location.key}
+            >
+            <Switch location={history.location}>
+              <Route exact path='/admin/newcars'component={NewCarsList} />
+              <Route exact path='/admin/users' component={UsersList}/>
+              <Route exact path='/admin/add' component={AddAdminUser}/>
+              <Route path='/admin/user/cars/:userId'
+                component={({match})=><UserCars id={match.params.userId}/>}
+              />
+              <Route path='/:notFound' component={PageNotFound}/>
+            </Switch>
+          </CSSTransition>
+        </SwitchTransition>
       </div>
     </div>
   );

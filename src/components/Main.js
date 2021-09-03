@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+//import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -99,13 +100,13 @@ const Main = ({ loader, setLoader }) => {
   
   return (
     <div className="main_container">
-       <Switch>
-          <Route exact path='/' component={First}/>
-          <Route path='/search' component={Search}/>
-          <Route path='/user/:link' component={BasicUserPage}/>
-          <Route path='/admin/:link' component={AdminUserPage}/>
-          <Route path='/:notFound' component={PageNotFound}/>
-        </Switch>
+      <Switch>
+        <Route exact path='/' component={First}/>
+        <Route path='/search' component={Search}/>
+        <Route path='/user/:link' component={BasicUserPage}/>
+        <Route path='/admin/:link' component={AdminUserPage}/>
+        <Route path='/:notFound' component={PageNotFound}/>
+      </Switch>
     </div>
   );
 };
@@ -138,3 +139,24 @@ const First = ()=>{
 
   return(<Redirect to='/search'/>);
 }
+
+/*
+return (
+    <div className="main_container">
+      <SwitchTransition>
+        <CSSTransition
+          timeout={250}
+          classNames='fade'
+          key={history.location.key}
+        >
+          <Switch location={history.location}>
+            <Route exact path='/' component={First}/>
+            <Route path='/search' component={Search}/>
+            <Route path='/user/:link' component={BasicUserPage}/>
+            <Route path='/admin/:link' component={AdminUserPage}/>
+            <Route path='/:notFound' component={PageNotFound}/>
+          </Switch>
+        </CSSTransition>
+      </SwitchTransition>
+    </div>
+  );*/ 

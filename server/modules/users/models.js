@@ -1,5 +1,5 @@
 const { unlink } = require("fs").promises;
-const mongoose = require("mongoose");
+//const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mongooseHidden = require('mongoose-hidden')();
@@ -121,7 +121,6 @@ class Models{
         
         return User.findOne({_id: id})
         .then(user => {
-
             if(!user) return new Error('User not found');
             
             if(id == user._id && !user.isAdmin){

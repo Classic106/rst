@@ -9,11 +9,11 @@ import '../icomoon/style.css';
 
 const SearchResult = ({ CarItem, searchResult, exact }) => {
 
-    const [result, setResult] = useState(searchResult);
+    const [result, setResult] = useState(searchResult || []);
     const [page, setPage] = useState(0);
     const [disabledBack, setDisabledBack] = useState(true);
     const [disabledNext, setDisabledNext] = useState(false);
-
+  
     const [byDate, setByDate] = useState(0);
     const [byPrice, setByPrice] = useState(0);
     const [byMileage, setByMileage] = useState(0);

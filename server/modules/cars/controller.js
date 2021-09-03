@@ -194,9 +194,10 @@ class Controller {
 
     try {
       await VerifyUser(authorization);
-      const car = await deleteItem(id);
-      if (car instanceof Error) throw car;
-      res.json(car);
+      const user = await deleteItem(id);
+
+      if (user instanceof Error) throw user;
+      res.json(user);
     } catch (err) {
       res.status(404).json({ message: err.message });
     }

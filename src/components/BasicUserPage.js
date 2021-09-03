@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { useSelector } from "react-redux";
 import { Switch, Route } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
@@ -18,7 +19,7 @@ const BasicUserPage = ()=>{
   const history = useHistory();
   
   const locationState = history.location.state;
-
+  //console.log(history.location);
   const { searchResult } = useSelector(store => store.search);
   
   const [buttonIndex, setButtonIndex] = useState(0);
@@ -29,9 +30,9 @@ const BasicUserPage = ()=>{
   const [activeMessage, setActiveMessage] = useState(false);
   
   useEffect(()=>{
-    setButtonIndex(+locationState || 1);
+    setButtonIndex(locationState === undefined ? 1 : locationState);
   }, [locationState]);
-  console.log(locationState, buttonIndex)
+ 
   useEffect(()=>{
     buttonIndex === 0 ? setActiveSearch(true) : setActiveSearch(false);
     buttonIndex === 1 ? setActiveMyCars(true) : setActiveMyCars(false);
@@ -77,23 +78,32 @@ const BasicUserPage = ()=>{
       </div>
       <hr/>
       <div className='user_main'>
-       <Switch>
-          <Route path='/user/search'
-            component={()=>
-              <SearchResult 
-                CarItem={CarItem}
-                searchResult={searchResult}
-                exact
-              />}
-          />
-          <Route path='/user/cars' component={UserCars}/>
-          <Route path='/user/addcar' component={AddCarForm}/>
-          <Route path='/user/profile' component={UserProfile}/>
-          <Route path='/user/:carId'
-            component={({match})=><ShowCar id={match.params.carId}/>}
-          />
-          <Route path='/:notFound' component={PageNotFound}/>
-        </Switch>
+        <SwitchTransition>
+          <CSSTransition
+            timeout={250}
+            classNames='fade'
+            key={history.location.key}
+          >
+            <Switch location={history.location}>
+              <Route exact path='/user/search'
+                component={()=>
+                  <SearchResult 
+                    CarItem={CarItem}
+                    searchResult={searchResult}
+                    exact
+                  />}
+              />
+              <Route exact path='/user/cars' component={UserCars}/>
+              <Route path='/user/addcar' component={AddCarForm}/>
+              <Route path='/user/profile' component={UserProfile}/>
+              <Route path='/user/:carId'
+                component={({match})=><ShowCar id={match.params.carId}/>}
+              />
+              <Route path='/:notFound' component={PageNotFound}/>
+              
+            </Switch>
+          </CSSTransition>
+        </SwitchTransition>
       </div>
     </div>
   );
